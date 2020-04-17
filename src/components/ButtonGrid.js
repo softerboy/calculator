@@ -33,7 +33,7 @@ export default function ButtonGrid() {
     <>
       {symbolGrid.map(function (row, index) {
         return (
-          <Row noGutters style={{ minWidth: '380px' }} key={index}>
+          <Row noGutters key={index}>
             {renderRow(row)}
           </Row>
         )

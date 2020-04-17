@@ -1,0 +1,9 @@
+@font-face {
+  font-family: CalcMDL2;
+  src: url('./assets/fonts/CalcMDL2.ttf');
+}
+
+html,
+body {
+  font-family: CalcMDL2, sans-serif;
+}

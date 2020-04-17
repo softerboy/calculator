@@ -1,17 +1,17 @@
 import React from 'react'
-import { Container, Row, Col, Alert } from 'react-bootstrap'
+
+import Row from 'react-bootstrap/Row'
+import Container from 'react-bootstrap/Container'
+
+import ButtonGrid from './components/ButtonGrid'
 
 function App() {
   return (
-    <Container className="mt-3">
-      <Row>
-        <Col>
-          <Alert variant="success">
-            The react bootstrap successfully setup
-          </Alert>
-        </Col>
-      </Row>
-    </Container>
+    <Row>
+      <Container fluid>
+        <ButtonGrid />
+      </Container>
+    </Row>
   )
 }
 

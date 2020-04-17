@@ -4,8 +4,9 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 
-import ButtonGrid from './ButtonGrid'
 import RightTabs from './RightTabs'
+import ButtonGrid from './ButtonGrid'
+import InputScreen from './InputScreen'
 
 export default function MainLayout() {
   return (
@@ -15,7 +16,7 @@ export default function MainLayout() {
         <Col md={9}>
           <Row>
             <Col className="text-white text-right">
-              <h1>User entered input would display here</h1>
+              <InputScreen expression="100 - 12" result="88" />
             </Col>
           </Row>
           <Row>

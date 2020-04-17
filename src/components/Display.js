@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export default function InputScreen(props) {
+export default function Display(props) {
   const { expression, result } = props
   return (
     <div className="d-block text-right pt-4 pb-4">
@@ -13,12 +13,12 @@ export default function InputScreen(props) {
   )
 }
 
-InputScreen.propTypes = {
+Display.propTypes = {
   expression: PropTypes.string,
   result: PropTypes.string,
 }
 
-InputScreen.defaultProps = {
+Display.defaultProps = {
   expression: '',
   result: '',
 }

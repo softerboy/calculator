@@ -3,6 +3,8 @@ import React from 'react'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
 
+import HistoryState from './HistoryState'
+
 export default function RightTabs() {
   return (
     <Tabs id="rightTab" defaultActiveKey="history">
@@ -12,8 +14,7 @@ export default function RightTabs() {
         className="text-white text-right"
         tabClassName="right-tab"
       >
-        {/* TODO: put history widget here */}
-        Display history here
+        <HistoryState />
       </Tab>
       <Tab
         title="Memory"

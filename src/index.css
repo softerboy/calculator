@@ -37,3 +37,18 @@ body, #root {
 .nav-tabs {
   border: none;
 }
+
+.history-list li {
+  list-style: none !important;
+}
+
+.list-group-item {
+  border-radius: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  outline: none !important;
+}
+
+.list-group-item:hover {
+  background-color: #353535 !important;
+}

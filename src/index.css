@@ -52,3 +52,9 @@ body, #root {
 .list-group-item:hover {
   background-color: #353535 !important;
 }
+
+.history-tab-content {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  max-height: calc(100vh - 50px);
+}

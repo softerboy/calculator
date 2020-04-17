@@ -11,7 +11,7 @@ export default function RightTabs() {
       <Tab
         title="History"
         eventKey="history"
-        className="text-white text-right"
+        className="text-white text-right history-tab-content"
         tabClassName="right-tab"
       >
         <HistoryState />

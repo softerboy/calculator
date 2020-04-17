@@ -29,15 +29,11 @@ export default function ButtonGrid() {
     })
   }
 
-  return (
-    <>
-      {symbolGrid.map(function (row, index) {
-        return (
-          <Row noGutters key={index}>
-            {renderRow(row)}
-          </Row>
-        )
-      })}
-    </>
-  )
+  return symbolGrid.map(function (row, index) {
+    return (
+      <Row noGutters key={index}>
+        {renderRow(row)}
+      </Row>
+    )
+  })
 }

@@ -6,4 +6,34 @@
 html,
 body {
   font-family: CalcMDL2, sans-serif;
+  height: 100%;
+}
+
+body {
+  background: #1F1F1F;
+}
+
+body, #root {
+  min-height: 100%;
+}
+
+.right-tab {
+  background: #1F1F1F;
+  border-radius: 0 !important;
+  color: #FFFFFF !important;
+  outline: none;
+}
+
+.right-tab.active {
+  border: 0;
+  background-color: transparent !important;
+  border-bottom: 3px solid #D77800 !important;
+}
+
+.right-tab:hover {
+  border: none;
+}
+
+.nav-tabs {
+  border: none;
 }

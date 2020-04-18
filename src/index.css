@@ -10,24 +10,25 @@ body {
 }
 
 body {
-  background: #1F1F1F;
+  background: #222527;
 }
 
-body, #root {
+body,
+#root {
   min-height: 100%;
 }
 
 .right-tab {
-  background: #1F1F1F;
+  background: transparent;
   border-radius: 0 !important;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
   outline: none;
 }
 
 .right-tab.active {
   border: 0;
   background-color: transparent !important;
-  border-bottom: 3px solid #D77800 !important;
+  border-bottom: 3px solid #d77800 !important;
 }
 
 .right-tab:hover {
@@ -60,5 +61,30 @@ body, #root {
 }
 
 .push-button {
-  outline: none !important;
+  font-size: 1.3em;
+  font-weight: normal;
+  border: none;
+}
+
+.operation-button {
+  background-color: #151718;
+}
+
+.operation-button:hover {
+  background-color: #4b4b4b;
+}
+
+.number-button {
+  background-color: #070708;
+}
+
+.number-button:hover {
+  background-color: #4b4b4b;
+}
+
+.equal-button {
+  background-color: #6B4718;
+}
+.equal-button:hover {
+  background-color: #C46F03;
 }

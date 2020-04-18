@@ -12,8 +12,8 @@ export const buttons = {
   BTN_NUM_NINE: 9,
 
   // operations
-  BTN_PERCENT: 10,
-  BTN_CANCEL_ENTRY: 11,
+  BTN_SIGN: 10,
+  BTN_FLOATING_POINT: 11,
   BTN_CLEAR: 12,
   BTN_REMOVE: 13,
   BTN_ONE_DIVIDE_BY: 14,
@@ -23,7 +23,7 @@ export const buttons = {
   BTN_MULTIPLY: 18,
   BTN_SUBTRACT: 19,
   BTN_ADD: 20,
-  BTN_SIGN: 21,
-  BTN_FLOATING_POINT: 22,
+  BTN_PERCENT: 21,
+  BTN_CANCEL_ENTRY: 22,
   BTN_EQUAL: 23,
 }

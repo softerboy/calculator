@@ -4,10 +4,10 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 
-import Display from './Display'
 import RightTabs from './RightTabs'
-import ButtonGrid from './ButtonGrid'
+import DisplayState from './DisplayState'
 import MemoryToolbar from './MemoryToolbar'
+import ButtonGridState from './ButtonGridState'
 
 export default function MainLayout() {
   return (
@@ -22,13 +22,13 @@ export default function MainLayout() {
                 className="rounded-0 p-3 memory-button d-md-none d-sm-block"
               />
             </div>
-            <Display expression="100 - 12 =" result="88" />
+            <DisplayState />
             <MemoryToolbar />
           </Col>
         </Row>
         <Row className="flex-grow-1">
           <Col className="d-flex flex-column flex-grow-1">
-            <ButtonGrid />
+            <ButtonGridState />
           </Col>
         </Row>
       </Col>

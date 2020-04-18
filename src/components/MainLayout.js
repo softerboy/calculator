@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col'
 import Display from './Display'
 import RightTabs from './RightTabs'
 import ButtonGrid from './ButtonGrid'
+import MemoryToolbar from './MemoryToolbar'
 
 export default function MainLayout() {
   return (
@@ -15,6 +16,7 @@ export default function MainLayout() {
         <Row>
           <Col className="text-white text-right">
             <Display expression="100 - 12 =" result="88" />
+            <MemoryToolbar />
           </Col>
         </Row>
         <Row className="flex-grow-1">

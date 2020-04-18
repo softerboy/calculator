@@ -26,4 +26,10 @@ export const buttons = {
   BTN_PERCENT: 21,
   BTN_CANCEL_ENTRY: 22,
   BTN_EQUAL: 23,
+
+  BTN_MEM_CLEAR: 24,
+  BTN_MEM_RECALL: 25,
+  BTN_MEM_STORE: 26,
+  BTN_MEM_ADD: 27,
+  BTN_MEM_SUBTRACT: 28,
 }

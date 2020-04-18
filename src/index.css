@@ -116,6 +116,18 @@ body,
   box-shadow: none !important;
 }
 
+.memory-button {
+  border: none;
+  box-shadow: none !important;
+  background-color: transparent;
+}
+
+.memory-button:hover,
+.memory-button:focus,
+.memory-button:active {
+  background-color: #4b4b4b !important;
+}
+
 /* width */
 ::-webkit-scrollbar {
   display: none;

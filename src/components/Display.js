@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 export default function Display(props) {
   const { expression, result } = props
   return (
-    <div className="d-block text-right pt-4 pb-4">
+    <div className="d-block text-right p-4">
       <span className="text-secondary" style={{ fontSize: '0.9em' }}>
         {expression}
       </span>

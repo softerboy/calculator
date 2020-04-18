@@ -3,6 +3,7 @@ import React from 'react'
 import Button from 'react-bootstrap/Button'
 
 import History from './History'
+import { toFixedNumber } from '../core/util'
 
 /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -43,9 +44,10 @@ function dummyHistory(count) {
 
     expression = `${firstNumber} ${operation} ${secondNumber} =`
     if (!Number.isInteger(result)) {
-      result = result.toFixed(6)
+      result = toFixedNumber(result, 6)
     }
-    history.push({ expression, result: String(result) })
+
+    history.push({ expression, result })
   }
 
   return history
@@ -54,7 +56,7 @@ function dummyHistory(count) {
 export default function HistoryState() {
   return (
     <>
-      <History history={dummyHistory(10)} />
+      <History history={dummyHistory(20)} />
 
       <Button
         className="trash-button"

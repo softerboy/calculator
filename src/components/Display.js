@@ -15,7 +15,7 @@ export default function Display(props) {
 
 Display.propTypes = {
   expression: PropTypes.string,
-  result: PropTypes.string,
+  result: PropTypes.number,
 }
 
 Display.defaultProps = {

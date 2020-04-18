@@ -19,7 +19,7 @@ export default function HistoryItem(props) {
 
 HistoryItem.propTypes = {
   expression: PropTypes.string,
-  result: PropTypes.string,
+  result: PropTypes.number,
 }
 
 HistoryItem.defaultProps = {

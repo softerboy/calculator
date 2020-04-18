@@ -7,6 +7,7 @@ import Display from './Display'
 import RightTabs from './RightTabs'
 import ButtonGrid from './ButtonGrid'
 import MemoryToolbar from './MemoryToolbar'
+import Button from 'react-bootstrap/Button'
 
 export default function MainLayout() {
   return (
@@ -15,6 +16,12 @@ export default function MainLayout() {
       <Col md={9} className="d-flex flex-column">
         <Row>
           <Col className="text-white text-right">
+            <div className="d-flex justify-content-end">
+              <Button
+                dangerouslySetInnerHTML={{ __html: '&#xE81C;' }}
+                className="rounded-0 p-3 memory-button d-md-none d-sm-block"
+              />
+            </div>
             <Display expression="100 - 12 =" result="88" />
             <MemoryToolbar />
           </Col>

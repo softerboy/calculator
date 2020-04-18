@@ -1,0 +1,1 @@
+export const SET_DISPLAY_RESULT = 'SET_DISPLAY_RESULT'

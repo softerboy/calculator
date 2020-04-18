@@ -1,16 +1,8 @@
-import { createStore } from 'redux'
+import { createStore, combineReducers } from 'redux'
 
-function counter(state = 0, action) {
-  if (action.type === 'INCREMENT') {
-    return state + 1
-  } else if (action.type === 'DECREMENT') {
-    return state - 1
-  }
+import * as reducers from './reducers'
 
-  return state
-}
-
-const store = createStore(counter)
+const store = createStore(combineReducers(reducers))
 
 store.subscribe(function () {
   // eslint-disable-next-line no-console

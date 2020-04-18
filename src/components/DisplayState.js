@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux'
 import Display from './Display'
 
 export default function DisplayState() {
-  const count = useSelector(function (state) {
-    return state
+  const { expression, result } = useSelector(function (state) {
+    return state.display
   })
 
-  return <Display result={count} />
+  return <Display result={result} expression={expression} />
 }

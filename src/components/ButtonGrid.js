@@ -1,16 +1,22 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 
-import symbolGrid from '../common/symbols'
+import buttonGrid from '../common/button-grid'
 
-export default function ButtonGrid() {
-  function renderCell(cell) {
+export default function ButtonGrid(props) {
+  function renderCell(button) {
     return (
-      <Button block variant="dark" className="rounded-0 h-100 push-button">
-        <span dangerouslySetInnerHTML={{ __html: cell }} />
+      <Button
+        block
+        variant="dark"
+        className="rounded-0 h-100 push-button"
+        onClick={props.onClick.bind(this, button)}
+      >
+        <span dangerouslySetInnerHTML={{ __html: button.symbol }} />
       </Button>
     )
   }
@@ -29,11 +35,19 @@ export default function ButtonGrid() {
     })
   }
 
-  return symbolGrid.map(function (row, index) {
+  return buttonGrid.map(function (row, index) {
     return (
       <Row className="flex-grow-1" noGutters key={index}>
         {renderRow(row)}
       </Row>
     )
   })
+}
+
+ButtonGrid.propTypes = {
+  onClick: PropTypes.func,
+}
+
+ButtonGrid.defaultProps = {
+  onClick: function () {}, // noop
 }

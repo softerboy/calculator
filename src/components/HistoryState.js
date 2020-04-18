@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Button from 'react-bootstrap/Button'
+
 import History from './History'
 
 /**
@@ -50,5 +52,14 @@ function dummyHistory(count) {
 }
 
 export default function HistoryState() {
-  return <History history={dummyHistory(20)} />
+  return (
+    <>
+      <History history={dummyHistory(10)} />
+
+      <Button
+        className="trash-button"
+        dangerouslySetInnerHTML={{ __html: '&#xE74D;' }}
+      />
+    </>
+  )
 }

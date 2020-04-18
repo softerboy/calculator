@@ -54,10 +54,11 @@ body,
   background-color: #353535 !important;
 }
 
-.history-tab-content {
+.history-list {
   overflow-x: hidden;
   overflow-y: scroll;
-  max-height: calc(100vh - 50px);
+  max-height: calc(100vh - 90px);
+  position: relative;
 }
 
 .push-button {
@@ -87,4 +88,35 @@ body,
 }
 .equal-button:hover {
   background-color: #C46F03;
+}
+
+.equal-button:focus {
+  background-color: #C46F03;
+}
+
+.trash-button {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-color: transparent;
+  border-radius: 0;
+  background-color: transparent;
+  color: #ffffff;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  outline: none !important;
+}
+
+.trash-button:hover,
+.trash-button:focus {
+  background-color: #4b4b4b !important;
+  border: none !important;
+  outline: none;
+  box-shadow: none !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+  display: none;
 }

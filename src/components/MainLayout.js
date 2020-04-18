@@ -2,12 +2,12 @@ import React from 'react'
 
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Button from 'react-bootstrap/Button'
 
 import Display from './Display'
 import RightTabs from './RightTabs'
 import ButtonGrid from './ButtonGrid'
 import MemoryToolbar from './MemoryToolbar'
-import Button from 'react-bootstrap/Button'
 
 export default function MainLayout() {
   return (

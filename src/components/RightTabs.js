@@ -23,7 +23,7 @@ export default function RightTabs() {
         tabClassName="right-tab"
       >
         {/* TODO: put memory widget here */}
-        Display memory here
+        <h3>50</h3>
       </Tab>
     </Tabs>
   )

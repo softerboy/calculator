@@ -9,7 +9,7 @@ import symbolGrid from '../common/symbols'
 export default function ButtonGrid() {
   function renderCell(cell) {
     return (
-      <Button block variant="dark" className="rounded-0 p-3">
+      <Button block variant="dark" className="rounded-0 h-100 push-button">
         <span dangerouslySetInnerHTML={{ __html: cell }} />
       </Button>
     )
@@ -31,7 +31,7 @@ export default function ButtonGrid() {
 
   return symbolGrid.map(function (row, index) {
     return (
-      <Row noGutters key={index}>
+      <Row className="flex-grow-1" noGutters key={index}>
         {renderRow(row)}
       </Row>
     )

@@ -28,7 +28,7 @@ History.propTypes = {
   history: PropTypes.arrayOf(
     PropTypes.shape({
       expression: PropTypes.string,
-      result: PropTypes.number,
+      result: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     }),
   ),
 }

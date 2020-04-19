@@ -1,1 +1,5 @@
 export const SET_DISPLAY_RESULT = 'SET_DISPLAY_RESULT'
+
+export const ACTION_POP = 'ACTION_POP'
+export const ACTION_PUSH = 'ACTION_PUSH'
+export const ACTION_CLEAR = 'ACTION_CLEAR'

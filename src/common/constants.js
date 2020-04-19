@@ -33,3 +33,5 @@ export const buttons = {
   BTN_MEM_ADD: 27,
   BTN_MEM_SUBTRACT: 28,
 }
+
+export const MAX_INPUT_LENGTH = 15

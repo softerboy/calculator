@@ -15,7 +15,7 @@ export default function Display(props) {
 
 Display.propTypes = {
   expression: PropTypes.string,
-  result: PropTypes.number,
+  result: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 }
 
 Display.defaultProps = {

@@ -12,6 +12,7 @@ import {
 import { isNumberAction, isOperatorAction } from '../core/util'
 
 export default function KeyboardState() {
+  let isExpressionCalculated = false
   const dispatch = useDispatch()
   const { result: currentResult } = useSelector(function (state) {
     return state.display
@@ -32,7 +33,11 @@ export default function KeyboardState() {
     // display input is integer, simply add selected digit
     // to back of current number
     if (Number.isInteger(currentResult)) {
-      const payload = { result: currentResult * 10 + target.id }
+      let payload = { result: currentResult * 10 + target.id }
+      if (isExpressionCalculated) {
+        payload = { result: target.id }
+        isExpressionCalculated = !isExpressionCalculated
+      }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 
@@ -40,7 +45,11 @@ export default function KeyboardState() {
     // number is floating point, simply put entered digit to
     // back of current number
     if (!Number.isInteger(currentResult)) {
-      const payload = { result: currentResult + '' + target.id }
+      let payload = { result: currentResult + '' + target.id }
+      if (isExpressionCalculated) {
+        payload = { result: target.id }
+        isExpressionCalculated = !isExpressionCalculated
+      }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
   }
@@ -91,12 +100,13 @@ export default function KeyboardState() {
       } else {
         payload.result = resultCharArray.slice(0, -1).join('')
       }
-
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
   }
 
   function onOperatorButtonClick(target) {
+    isExpressionCalculated = true
+
     const payload = {
       operand: currentResult,
       operator: target,

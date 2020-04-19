@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 
 import Display from './Display'
 import { expressionFrom } from '../core/util'
+import { htmlSymbols } from '../common/constants'
 
 export default function DisplayState() {
   const { result } = useSelector(function (state) {
@@ -13,6 +14,9 @@ export default function DisplayState() {
     return state.accumulator
   })
 
-  const expression = expressionFrom(stack)
+  const expression = String(expressionFrom(stack)).replace(
+    /-/g,
+    htmlSymbols.MINUS,
+  )
   return <Display result={result} expression={expression} />
 }

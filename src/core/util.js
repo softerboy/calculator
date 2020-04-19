@@ -36,11 +36,11 @@ export function isUnaryOperator(target) {
 
 export function formatUnaryOperation(operator, operand) {
   if (operator.id === buttons.BTN_SQUARE_ROOT) {
-    return '&#8730; (' + operand + ')'
+    return ' &#8730; (' + operand + ')'
   } else if (operator.id === buttons.BTN_SQUARE) {
-    return 'sqr(' + operand + ')'
+    return ' sqr(' + operand + ')'
   } else if (operator.id === buttons.BTN_ONE_DIVIDE_BY) {
-    return '1 / (' + operand + ')'
+    return ' 1 / (' + operand + ')'
   } else if (operator.id === buttons.BTN_PERCENT) {
     return Number(operand) / 100
   }

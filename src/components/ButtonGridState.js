@@ -2,9 +2,14 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import ButtonGrid from './ButtonGrid'
-import { buttons, isNumberAction } from '../core/util'
+import { buttons } from '../common/constants'
 import { MAX_INPUT_LENGTH } from '../common/constants'
-import { SET_DISPLAY_RESULT } from '../store/action-types'
+import {
+  ACCUMULATOR_CLEAR,
+  ACCUMULATOR_PUSH,
+  SET_DISPLAY_RESULT,
+} from '../store/action-types'
+import { isNumberAction, isOperatorAction } from '../core/util'
 
 export default function ButtonGridState() {
   const dispatch = useDispatch()
@@ -13,9 +18,9 @@ export default function ButtonGridState() {
   })
 
   function onClick(target) {
-    return isNumberAction(target)
-      ? onNumberButtonClick(target)
-      : onOperationButtonClick(target)
+    if (isNumberAction(target)) return onNumberButtonClick(target)
+    if (isOperatorAction(target)) return onOperatorButtonClick(target)
+    return onHelperButtonClick(target)
   }
 
   function onNumberButtonClick(target) {
@@ -40,7 +45,7 @@ export default function ButtonGridState() {
     }
   }
 
-  function onOperationButtonClick(target) {
+  function onHelperButtonClick(target) {
     if (target.id === buttons.BTN_SIGN && Number(currentResult) !== 0) {
       // swap sign
       const payload = { result: -1 * currentResult }
@@ -54,9 +59,10 @@ export default function ButtonGridState() {
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 
-    // clear display if C (Clear) button pressed
+    // clear display and stack if C (Clear) button pressed
     if (target.id === buttons.BTN_CLEAR) {
-      const payload = { expression: '', result: 0 }
+      dispatch({ type: ACCUMULATOR_CLEAR })
+      const payload = { result: 0 }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 
@@ -88,6 +94,15 @@ export default function ButtonGridState() {
 
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
+  }
+
+  function onOperatorButtonClick(target) {
+    const payload = {
+      operand: currentResult,
+      operator: target,
+    }
+
+    dispatch({ type: ACCUMULATOR_PUSH, payload })
   }
 
   return <ButtonGrid onClick={onClick} />

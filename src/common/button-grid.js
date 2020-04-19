@@ -11,7 +11,7 @@ export default [
     { symbol: '&#xF7C9;', id: buttons.BTN_ONE_DIVIDE_BY },
     { symbol: '&#xF7C8;', id: buttons.BTN_SQUARE },
     { symbol: '&#xF899;', id: buttons.BTN_SQUARE_ROOT },
-    { symbol: '&#xE94A;', id: buttons.BTN_ONE_DIVIDE_BY },
+    { symbol: '&#xE94A;', id: buttons.BTN_DIVIDE },
   ],
   [
     { symbol: '7', id: buttons.BTN_NUM_SEVEN },

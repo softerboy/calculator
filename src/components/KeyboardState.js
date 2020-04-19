@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import ButtonGrid from './ButtonGrid'
+import Keyboard from './Keyboard'
 import { buttons } from '../common/constants'
 import { MAX_INPUT_LENGTH } from '../common/constants'
 import {
@@ -11,7 +11,7 @@ import {
 } from '../store/action-types'
 import { isNumberAction, isOperatorAction } from '../core/util'
 
-export default function ButtonGridState() {
+export default function KeyboardState() {
   const dispatch = useDispatch()
   const { result: currentResult } = useSelector(function (state) {
     return state.display
@@ -105,5 +105,5 @@ export default function ButtonGridState() {
     dispatch({ type: ACCUMULATOR_PUSH, payload })
   }
 
-  return <ButtonGrid onClick={onClick} />
+  return <Keyboard onClick={onClick} />
 }

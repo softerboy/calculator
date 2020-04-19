@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button'
 import RightTabs from './RightTabs'
 import DisplayState from './DisplayState'
 import MemoryToolbar from './MemoryToolbar'
-import ButtonGridState from './ButtonGridState'
+import KeyboardState from './KeyboardState'
 
 export default function MainLayout() {
   return (
@@ -28,7 +28,7 @@ export default function MainLayout() {
         </Row>
         <Row className="flex-grow-1">
           <Col className="d-flex flex-column flex-grow-1">
-            <ButtonGridState />
+            <KeyboardState />
           </Col>
         </Row>
       </Col>

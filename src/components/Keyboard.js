@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 
 import { buttons } from '../common/constants'
-import buttonGrid from '../common/button-grid'
+import buttonGrid from '../common/keys'
 
 function colorStyleFor(buttonId) {
   if (buttonId === buttons.BTN_EQUAL) {
@@ -20,7 +20,7 @@ function colorStyleFor(buttonId) {
   return 'operation-button'
 }
 
-export default function ButtonGrid(props) {
+export default function Keyboard(props) {
   function renderCell(button) {
     const className = 'rounded-0 h-100 push-button ' + colorStyleFor(button.id)
 
@@ -59,10 +59,10 @@ export default function ButtonGrid(props) {
   })
 }
 
-ButtonGrid.propTypes = {
+Keyboard.propTypes = {
   onClick: PropTypes.func,
 }
 
-ButtonGrid.defaultProps = {
+Keyboard.defaultProps = {
   onClick: function () {}, // noop
 }

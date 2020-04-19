@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import Button from 'react-bootstrap/Button'
 
-import buttons from '../common/memory-buttons'
+import buttons from '../common/memory-keys'
 
 export default function MemoryToolbar(props) {
   function renderButton(button) {

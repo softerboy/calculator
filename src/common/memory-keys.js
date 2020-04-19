@@ -1,9 +1,9 @@
-import { buttons } from './constants'
+import { buttons, icons } from './constants'
 
 export default [
-  { symbol: '&#xF754;', id: buttons.BTN_MEM_CLEAR },
-  { symbol: '&#xF755;', id: buttons.BTN_MEM_RECALL },
-  { symbol: '&#xF757;', id: buttons.BTN_MEM_ADD },
-  { symbol: '&#xF758;', id: buttons.BTN_MEM_SUBTRACT },
-  { symbol: '&#xF756;', id: buttons.BTN_MEM_STORE },
+  { symbol: icons.MEM_CLEAR, id: buttons.BTN_MEM_CLEAR },
+  { symbol: icons.MEM_RECALL, id: buttons.BTN_MEM_RECALL },
+  { symbol: icons.MEM_ADD, id: buttons.BTN_MEM_ADD },
+  { symbol: icons.MEM_SUBTRACT, id: buttons.BTN_MEM_SUBTRACT },
+  { symbol: icons.MEM_STORE, id: buttons.BTN_MEM_STORE },
 ]

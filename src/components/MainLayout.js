@@ -8,6 +8,7 @@ import RightTabs from './RightTabs'
 import DisplayState from './DisplayState'
 import MemoryToolbar from './MemoryToolbar'
 import KeyboardState from './KeyboardState'
+import { icons } from '../common/constants'
 
 export default function MainLayout() {
   return (
@@ -18,7 +19,7 @@ export default function MainLayout() {
           <Col className="text-white text-right">
             <div className="d-flex justify-content-end">
               <Button
-                dangerouslySetInnerHTML={{ __html: '&#xE81C;' }}
+                dangerouslySetInnerHTML={{ __html: icons.TRASH }}
                 className="rounded-0 p-3 memory-button d-md-none d-sm-block"
               />
             </div>

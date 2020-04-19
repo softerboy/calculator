@@ -35,3 +35,26 @@ export const buttons = {
 }
 
 export const MAX_INPUT_LENGTH = 15
+
+export const icons = {
+  PERCENT: '&#xE94C;',
+  BACKSPACE: '&#xE94F;',
+  ONE_DIVIDE_BY: '&#xF7C9;',
+  SQUARE: '&#xF7C8;',
+  SQUARE_ROOT: '&#xF899;',
+  DIVIDE: '&#xE94A;',
+  MULTIPLY: '&#xE947;',
+  SUBTRACT: '&#xE949;',
+  ADD: '&#xE948;',
+  SIGN: '&#xF898;',
+  POINT: '&#xE45D;',
+  EQUAL: '&#xE94E;',
+
+  MEM_CLEAR: '&#xF754;',
+  MEM_RECALL: '&#xF755;',
+  MEM_ADD: '&#xF757;',
+  MEM_SUBTRACT: '&#xF758;',
+  MEM_STORE: '&#xF756;',
+  TRASH: '&#xE81C;',
+  CLOCK: '&#xE74D;',
+}

@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button'
 
 import History from './History'
 import { toFixedNumber } from '../core/util'
+import { icons } from '../common/constants'
 
 /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -60,7 +61,7 @@ export default function HistoryState() {
 
       <Button
         className="trash-button"
-        dangerouslySetInnerHTML={{ __html: '&#xE74D;' }}
+        dangerouslySetInnerHTML={{ __html: icons.CLOCK }}
       />
     </>
   )

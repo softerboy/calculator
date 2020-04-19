@@ -1,4 +1,4 @@
-import { buttons } from '../common/constants'
+import { buttons, htmlSymbols } from '../common/constants'
 
 export function toFixedNumber(num, digits, base) {
   const pow = Math.pow(base || 10, digits)
@@ -53,13 +53,13 @@ export function formatOperation(operator, operand) {
 
 export function formatBinaryOperation(operator, operand) {
   if (operator.id === buttons.BTN_ADD) {
-    return operand + ' +'
+    return operand + ' ' + htmlSymbols.PLUS
   } else if (operator.id === buttons.BTN_SUBTRACT) {
-    return operand + ' -'
+    return operand + ' ' + htmlSymbols.MINUS
   } else if (operator.id === buttons.BTN_DIVIDE) {
-    return operand + ' &#247;'
+    return operand + ' ' + htmlSymbols.DIVIDE
   } else if (operator.id === buttons.BTN_MULTIPLY) {
-    return operand + ' &#215;'
+    return operand + ' ' + htmlSymbols.MULTIPLY
   }
 }
 

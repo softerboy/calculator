@@ -58,3 +58,10 @@ export const icons = {
   TRASH: '&#xE81C;',
   CLOCK: '&#xE74D;',
 }
+
+export const htmlSymbols = {
+  PLUS: '&plus;',
+  MINUS: '&minus;',
+  DIVIDE: '&#247;',
+  MULTIPLY: '&#215;',
+}

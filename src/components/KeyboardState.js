@@ -16,7 +16,7 @@ export default function KeyboardState() {
   const [expressionCalculated, changeExpressionCalculatedTo] = useState(false)
   const [equalButtonPressed, setEqualButtonPressed] = useState(false)
 
-  const { result: currentResult } = useSelector(function (state) {
+  const { result: currentResult, error } = useSelector(function (state) {
     return state.display
   })
 
@@ -42,13 +42,15 @@ export default function KeyboardState() {
     // input length max than MAX_INPUT_LENGTH constant
     if (String(currentResult).length >= MAX_INPUT_LENGTH) return
 
+    if (error) setEqualButtonPressed(true)
+
     // in case of user pressed digit button and current
     // display input is integer, simply add selected digit
     // to back of current number
-    if (Number.isInteger(currentResult)) {
+    if (error || Number.isInteger(currentResult)) {
       let payload = { result: currentResult * 10 + target.id }
       if (expressionCalculated) {
-        payload = { result: target.id }
+        payload = { result: target.id, error: '' }
         changeExpressionCalculatedTo(false)
       }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
@@ -57,10 +59,10 @@ export default function KeyboardState() {
     // in case if user pressed digit button and current display
     // number is floating point, simply put entered digit to
     // back of current number
-    if (!Number.isInteger(currentResult)) {
+    if (error || !Number.isInteger(currentResult)) {
       let payload = { result: currentResult + '' + target.id }
       if (expressionCalculated) {
-        payload = { result: target.id }
+        payload = { result: target.id, error: '' }
         changeExpressionCalculatedTo(false)
       }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })

@@ -10,7 +10,7 @@ import { SET_DISPLAY_RESULT } from '../store/action-types'
 export default function DisplayState() {
   const dispatch = useDispatch()
 
-  const { result } = useSelector(function (state) {
+  const { result, error } = useSelector(function (state) {
     return state.display
   })
 
@@ -26,11 +26,18 @@ export default function DisplayState() {
     function () {
       const res = resultFrom(stack)
 
+      let payload = { result: res }
+      if (!isFinite(res)) {
+        payload = { error: 'Cannot divide by zero', result: 0 }
+      }
+
+      if (isNaN(res)) {
+        payload = { error: 'Invalid argument', result: 0 }
+      }
+
       dispatch({
         type: SET_DISPLAY_RESULT,
-        payload: {
-          result: res,
-        },
+        payload: payload,
       })
     },
     [stack, dispatch],
@@ -40,5 +47,5 @@ export default function DisplayState() {
     /-/g,
     htmlSymbols.MINUS,
   )
-  return <Display result={result} expression={expression} />
+  return <Display result={error || result} expression={expression} />
 }

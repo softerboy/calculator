@@ -1,19 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Keyboard from './Keyboard'
 import { buttons } from '../common/constants'
 import { MAX_INPUT_LENGTH } from '../common/constants'
+import { isNumberAction, isOperatorAction } from '../core/util'
 import {
   ACCUMULATOR_CLEAR,
   ACCUMULATOR_PUSH,
   SET_DISPLAY_RESULT,
 } from '../store/action-types'
-import { isNumberAction, isOperatorAction } from '../core/util'
 
 export default function KeyboardState() {
-  let isExpressionCalculated = false
   const dispatch = useDispatch()
+  const [expressionCalculated, changeExpressionCalculatedTo] = useState(false)
   const { result: currentResult } = useSelector(function (state) {
     return state.display
   })
@@ -34,9 +34,9 @@ export default function KeyboardState() {
     // to back of current number
     if (Number.isInteger(currentResult)) {
       let payload = { result: currentResult * 10 + target.id }
-      if (isExpressionCalculated) {
+      if (expressionCalculated) {
         payload = { result: target.id }
-        isExpressionCalculated = !isExpressionCalculated
+        changeExpressionCalculatedTo(false)
       }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
@@ -46,9 +46,9 @@ export default function KeyboardState() {
     // back of current number
     if (!Number.isInteger(currentResult)) {
       let payload = { result: currentResult + '' + target.id }
-      if (isExpressionCalculated) {
+      if (expressionCalculated) {
         payload = { result: target.id }
-        isExpressionCalculated = !isExpressionCalculated
+        changeExpressionCalculatedTo(false)
       }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
@@ -105,14 +105,15 @@ export default function KeyboardState() {
   }
 
   function onOperatorButtonClick(target) {
-    isExpressionCalculated = true
-
-    const payload = {
-      operand: currentResult,
-      operator: target,
-    }
-
-    dispatch({ type: ACCUMULATOR_PUSH, payload })
+    changeExpressionCalculatedTo(true)
+    // push last user action action into accumulator
+    dispatch({
+      type: ACCUMULATOR_PUSH,
+      payload: {
+        operand: currentResult,
+        operator: target,
+      },
+    })
   }
 
   return <Keyboard onClick={onClick} />

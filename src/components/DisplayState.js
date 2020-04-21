@@ -1,11 +1,14 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import Display from './Display'
-import { expressionFrom } from '../core/util'
 import { htmlSymbols } from '../common/constants'
+import { expressionFrom, resultFrom } from '../core/util'
+import { SET_DISPLAY_RESULT } from '../store/action-types'
 
 export default function DisplayState() {
+  const dispatch = useDispatch()
+
   const { result } = useSelector(function (state) {
     return state.display
   })
@@ -13,6 +16,24 @@ export default function DisplayState() {
   const stack = useSelector(function (state) {
     return state.accumulator
   })
+
+  // whenever accumulator stack changes,
+  // calculate new result from stack and display it,
+  // otherwise display current user entered number
+  // Note: second case managed by KeyboardState component
+  useEffect(
+    function () {
+      const res = resultFrom(stack)
+
+      dispatch({
+        type: SET_DISPLAY_RESULT,
+        payload: {
+          result: res,
+        },
+      })
+    },
+    [stack, dispatch],
+  )
 
   const expression = String(expressionFrom(stack)).replace(
     /-/g,

@@ -7,9 +7,4 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 )
 
-store.subscribe(function () {
-  // eslint-disable-next-line no-console
-  return console.log(store.getState())
-})
-
 export default store

@@ -117,6 +117,16 @@ export function expressionFrom(stack) {
   )
 }
 
-export function resultFrom(/*stack*/) {
-  // calculate result
+// returns current expression result on the display
+export function resultFrom(stack) {
+  // return 0 (zero) if accumulator stack is empty
+  if (!stack.length) return 0
+
+  const lastOperation = stack[stack.length - 1]
+
+  if (isUnaryOperator(lastOperation.operator)) {
+    return 'Calculate result'
+  }
+
+  return lastOperation.operand
 }

@@ -27,7 +27,7 @@ export default function Keyboard(props) {
     return (
       <Button
         block
-        variant="dark"
+        constiant="dark"
         className={className}
         onClick={props.onClick.bind(this, button)}
       >

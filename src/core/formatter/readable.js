@@ -1,4 +1,4 @@
-import { htmlSymbols } from '../common/constants'
+import { htmlSymbols } from '../../common/constants'
 
 /**
  * Converts mathematical expression into user readable

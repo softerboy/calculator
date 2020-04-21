@@ -2,10 +2,10 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Display from './Display'
-import formatter from '../core/display-formatter'
+import formatter from '../core/formatter/readable'
 import { htmlSymbols } from '../common/constants'
-import { expressionFrom, resultFrom } from '../core/util'
 import { SET_DISPLAY_RESULT } from '../store/action-types'
+import { expressionFrom, resultFrom } from '../core/accumulator'
 
 export default function DisplayState() {
   const dispatch = useDispatch()

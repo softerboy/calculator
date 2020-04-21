@@ -36,4 +36,8 @@ export default {
   add(operand) {
     return operand + ' ' + htmlSymbols.PLUS
   },
+
+  equal(operand) {
+    return ' ' + operand + ' ' + htmlSymbols.EQUAL
+  },
 }

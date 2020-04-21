@@ -65,4 +65,5 @@ export const htmlSymbols = {
   DIVIDE: '&#247;',
   MULTIPLY: '&#215;',
   SQUARE_ROOT: '&#8730',
+  EQUAL: '&#61;',
 }

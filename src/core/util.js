@@ -22,6 +22,7 @@ export function isOperatorAction(target) {
     buttons.BTN_MULTIPLY,
     buttons.BTN_SUBTRACT,
     buttons.BTN_ADD,
+    buttons.BTN_EQUAL,
   ]
 
   return operators.includes(target.id)
@@ -33,6 +34,7 @@ export function isUnaryOperator(target) {
     buttons.BTN_ONE_DIVIDE_BY,
     buttons.BTN_SQUARE,
     buttons.BTN_SQUARE_ROOT,
+    buttons.BTN_EQUAL,
   ].includes(target.id)
 }
 
@@ -45,7 +47,11 @@ export function formatUnaryOperation(operator, operand, formatter) {
     return formatter.oneDividedBy(operand)
   } else if (operator.id === buttons.BTN_PERCENT) {
     return formatter.percent(operand)
+  } else if (operator.id === buttons.BTN_EQUAL) {
+    return formatter.equal(operand)
   }
+
+  throw new Error('No formatter method found for operator ' + operator.id)
 }
 
 export function formatOperation(operator, operand, formatter) {
@@ -64,6 +70,8 @@ export function formatBinaryOperation(operator, operand, formatter) {
   } else if (operator.id === buttons.BTN_MULTIPLY) {
     return formatter.multiply(operand)
   }
+
+  throw new Error('No formatter method found for operator ' + operator.id)
 }
 
 // generates expression string from user entered operations
@@ -137,6 +145,12 @@ export function resultFrom(stack) {
   if (!stack.length) return 0
 
   const lastOperation = stack[stack.length - 1]
+
+  // in case user just pressed equal button on empty screen
+  // simply return entered number
+  if (stack.length === 1 && lastOperation.operator.id === buttons.BTN_EQUAL) {
+    return lastOperation.operand
+  }
 
   // in case of last operator is unary,
   // simply calculate expression

@@ -14,14 +14,27 @@ import {
 export default function KeyboardState() {
   const dispatch = useDispatch()
   const [expressionCalculated, changeExpressionCalculatedTo] = useState(false)
+  const [equalButtonPressed, setEqualButtonPressed] = useState(false)
+
   const { result: currentResult } = useSelector(function (state) {
     return state.display
   })
 
   function onClick(target) {
-    if (isNumberAction(target)) return onNumberButtonClick(target)
-    if (isOperatorAction(target)) return onOperatorButtonClick(target)
-    return onHelperButtonClick(target)
+    if (equalButtonPressed) {
+      dispatch({ type: ACCUMULATOR_CLEAR })
+      setEqualButtonPressed(false)
+    }
+
+    // without setImmediate clearing accumulator stack
+    // execute after keyboard action handlers and display
+    // shows zero which is incorrect. We need show user
+    // entered number after calculation (i.e. after equal button click)
+    return setImmediate(function () {
+      if (isNumberAction(target)) return onNumberButtonClick(target)
+      if (isOperatorAction(target)) return onOperatorButtonClick(target)
+      return onHelperButtonClick(target)
+    })
   }
 
   function onNumberButtonClick(target) {
@@ -105,6 +118,10 @@ export default function KeyboardState() {
   }
 
   function onOperatorButtonClick(target) {
+    if (target.id === buttons.BTN_EQUAL) {
+      setEqualButtonPressed(true)
+    }
+
     changeExpressionCalculatedTo(true)
     // push last user action action into accumulator
     dispatch({

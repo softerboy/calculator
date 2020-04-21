@@ -37,4 +37,8 @@ export default {
   add(operand) {
     return operand + '+'
   },
+
+  equal(operand) {
+    return operand
+  },
 }

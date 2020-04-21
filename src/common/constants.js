@@ -64,4 +64,5 @@ export const htmlSymbols = {
   MINUS: '&minus;',
   DIVIDE: '&#247;',
   MULTIPLY: '&#215;',
+  SQUARE_ROOT: '&#8730',
 }

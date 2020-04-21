@@ -1,4 +1,6 @@
-import { buttons, htmlSymbols } from '../common/constants'
+import { calc } from './expr-calc'
+import { buttons } from '../common/constants'
+import mathcalcFormatter from './mathcalc-formatter'
 
 export function toFixedNumber(num, digits, base) {
   const pow = Math.pow(base || 10, digits)
@@ -34,42 +36,43 @@ export function isUnaryOperator(target) {
   ].includes(target.id)
 }
 
-export function formatUnaryOperation(operator, operand) {
+export function formatUnaryOperation(operator, operand, formatter) {
   if (operator.id === buttons.BTN_SQUARE_ROOT) {
-    return ' &#8730; (' + operand + ')'
+    return formatter.squareRoot(operand)
   } else if (operator.id === buttons.BTN_SQUARE) {
-    return ' sqr(' + operand + ')'
+    return formatter.square(operand)
   } else if (operator.id === buttons.BTN_ONE_DIVIDE_BY) {
-    return ' 1 / (' + operand + ')'
+    return formatter.oneDividedBy(operand)
   } else if (operator.id === buttons.BTN_PERCENT) {
-    return Number(operand) / 100
+    return formatter.percent(operand)
   }
 }
 
-export function formatOperation(operator, operand) {
-  if (isUnaryOperator(operator)) return formatUnaryOperation(operator, operand)
-  return formatBinaryOperation(operator, operand)
+export function formatOperation(operator, operand, formatter) {
+  if (isUnaryOperator(operator))
+    return formatUnaryOperation(operator, operand, formatter)
+  return formatBinaryOperation(operator, operand, formatter)
 }
 
-export function formatBinaryOperation(operator, operand) {
+export function formatBinaryOperation(operator, operand, formatter) {
   if (operator.id === buttons.BTN_ADD) {
-    return operand + ' ' + htmlSymbols.PLUS
+    return formatter.add(operand)
   } else if (operator.id === buttons.BTN_SUBTRACT) {
-    return operand + ' ' + htmlSymbols.MINUS
+    return formatter.subtract(operand)
   } else if (operator.id === buttons.BTN_DIVIDE) {
-    return operand + ' ' + htmlSymbols.DIVIDE
+    return formatter.divide(operand)
   } else if (operator.id === buttons.BTN_MULTIPLY) {
-    return operand + ' ' + htmlSymbols.MULTIPLY
+    return formatter.multiply(operand)
   }
 }
 
 // generates expression string from user entered operations
-export function expressionFrom(stack) {
+export function expressionFrom(stack, formatter) {
   if (stack.length === 0) return ''
 
   if (stack.length === 1) {
     const { operator, operand } = stack[0]
-    return formatOperation(operator, operand)
+    return formatOperation(operator, operand, formatter)
   }
 
   const last = stack[stack.length - 1]
@@ -93,27 +96,38 @@ export function expressionFrom(stack) {
       const lastBinaryIndex = stack.length - index
       const first = stack.slice(0, lastBinaryIndex)
       const second = stack.slice(lastBinaryIndex)
-      return expressionFrom(first) + expressionFrom(second)
+      return (
+        expressionFrom(first, formatter) + expressionFrom(second, formatter)
+      )
     }
 
     // in two binary expression, one before will be operand of last
-    return formatOperation(last.operator, expressionFrom(stack.slice(0, -1)))
+    return formatOperation(
+      last.operator,
+      expressionFrom(stack.slice(0, -1), formatter),
+      formatter,
+    )
   }
 
   if (isUnaryOperator(last.operator) && !isUnaryOperator(beforeLast.operator)) {
     return (
-      expressionFrom(stack.slice(0, -1)) +
-      formatOperation(last.operator, last.operand)
+      expressionFrom(stack.slice(0, -1), formatter) +
+      formatOperation(last.operator, last.operand, formatter)
     )
   }
 
   if (!isUnaryOperator(last.operator) && isUnaryOperator(beforeLast.operator)) {
-    return formatOperation(last.operator, expressionFrom(stack.slice(0, -1)))
+    return formatOperation(
+      last.operator,
+      expressionFrom(stack.slice(0, -1), formatter),
+      formatter,
+    )
   }
 
   return formatOperation(
     last.operator,
-    expressionFrom(stack.slice(0, -1)) + ' ' + last.operand,
+    expressionFrom(stack.slice(0, -1), formatter) + ' ' + last.operand,
+    formatter,
   )
 }
 
@@ -124,9 +138,13 @@ export function resultFrom(stack) {
 
   const lastOperation = stack[stack.length - 1]
 
+  // in case of last operator is unary,
+  // simply calculate expression
+  const expression = expressionFrom(stack, mathcalcFormatter)
   if (isUnaryOperator(lastOperation.operator)) {
-    return 'Calculate result'
+    return calc(expression)
   }
 
-  return lastOperation.operand
+  // otherwise remove one of last +, -, *, / sign and calculate expression
+  return calc(expression.slice(0, -1))
 }

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Display from './Display'
+import formatter from '../core/display-formatter'
 import { htmlSymbols } from '../common/constants'
 import { expressionFrom, resultFrom } from '../core/util'
 import { SET_DISPLAY_RESULT } from '../store/action-types'
@@ -35,7 +36,7 @@ export default function DisplayState() {
     [stack, dispatch],
   )
 
-  const expression = String(expressionFrom(stack)).replace(
+  const expression = String(expressionFrom(stack, formatter)).replace(
     /-/g,
     htmlSymbols.MINUS,
   )

@@ -79,14 +79,14 @@ export default function KeyboardState() {
     // cancel last user entered input (number)
     // if CE (Cancel Entry) button pressed
     if (target.id === buttons.BTN_CANCEL_ENTRY) {
-      const payload = { result: 0 }
+      const payload = { result: 0, error: 0 }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 
     // clear display and stack if C (Clear) button pressed
     if (target.id === buttons.BTN_CLEAR) {
       dispatch({ type: ACCUMULATOR_CLEAR })
-      const payload = { result: 0 }
+      const payload = { result: 0, error: '' }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 

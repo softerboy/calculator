@@ -92,6 +92,23 @@ export function resultScientificFrom(stack) {
   return calc(expression.slice(0, -1))
 }
 
+function calculateUnary(operator, operand) {
+  if (operator.id === buttons.BTN_SQUARE_ROOT) {
+    return Math.sqrt(Number(operand))
+  }
+
+  if (operator.id === buttons.BTN_SQUARE) {
+    return Math.pow(Number(operand), 2)
+  }
+
+  if (operator.id === buttons.BTN_ONE_DIVIDE_BY) {
+    return 1 / Number(operand)
+  }
+
+  return operand
+  // throw new Error('Not an unary operator')
+}
+
 /*
  * Implements sequential calculating algorithm
  *
@@ -102,35 +119,52 @@ export function resultScientificFrom(stack) {
  * but in sequential calculating, result of above expression should be 15.
  * Which is calculated in left to right order
  */
-export function resultSequentialFrom(stack, initial, operator) {
-  if (!stack.length) return initial
+export function resultSequentialFrom(stack) {
+  if (!stack.length) return 0
 
-  const item = stack[0]
-  let previous = initial
-  if (operator === buttons.BTN_ADD) {
-    previous = Number(initial) + Number(item.operand)
-  }
+  return stack.reduce(function (acc, curr, index) {
+    if (index === 0) return acc + calculateUnary(curr.operator, curr.operand)
 
-  if (operator === buttons.BTN_SUBTRACT) {
-    previous = Number(initial) - Number(item.operand)
-  }
+    const before = stack[index - 1]
+    const { operand } = curr
 
-  if (operator === buttons.BTN_DIVIDE) {
-    previous = Number(initial) / Number(item.operand)
-  }
+    if (
+      before.operator.id === buttons.BTN_ADD &&
+      !isUnaryOperator(curr.operator)
+    ) {
+      return acc + Number(operand)
+    }
 
-  if (operator === buttons.BTN_MULTIPLY) {
-    previous = Number(initial) * Number(item.operand)
-  }
+    if (
+      before.operator.id === buttons.BTN_SUBTRACT &&
+      !isUnaryOperator(curr.operator)
+    ) {
+      return acc - Number(operand)
+    }
 
-  return resultSequentialFrom(stack.slice(1), previous, item.operator.id)
+    if (
+      before.operator.id === buttons.BTN_MULTIPLY &&
+      !isUnaryOperator(curr.operator)
+    ) {
+      return acc * Number(operand)
+    }
+
+    if (
+      before.operator.id === buttons.BTN_DIVIDE &&
+      !isUnaryOperator(curr.operator)
+    ) {
+      return acc / Number(operand)
+    }
+
+    if (isUnaryOperator(before.operator)) {
+      return calculateUnary(curr.operator, operand)
+    }
+
+    return acc + calculateUnary(curr.operator, operand)
+  }, 0)
 }
 
 export function resultFrom(stack, scientific = false) {
   if (scientific) return resultScientificFrom(stack)
-
-  if (!stack.length) return resultSequentialFrom(stack, 0, buttons.BTN_ADD)
-
-  const { operator, operand } = stack[0]
-  return resultSequentialFrom(stack.slice(1), operand, operator.id)
+  return resultSequentialFrom(stack)
 }

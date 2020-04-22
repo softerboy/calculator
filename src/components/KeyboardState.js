@@ -40,7 +40,8 @@ export default function KeyboardState() {
   function onNumberButtonClick(target) {
     // do nothing if current displayed
     // input length max than MAX_INPUT_LENGTH constant
-    if (String(currentResult).length >= MAX_INPUT_LENGTH) return
+    const maxInputReached = String(currentResult).length >= MAX_INPUT_LENGTH
+    if (maxInputReached && !expressionCalculated) return
 
     if (error) setEqualButtonPressed(true)
 

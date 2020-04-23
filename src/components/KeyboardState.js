@@ -151,7 +151,7 @@ export default function KeyboardState() {
     }
 
     setExpressionCalculated(true)
-    setIsLastOperationButtonPressed(true)
+    if (!isUnaryOperator(target)) setIsLastOperationButtonPressed(true)
 
     // push last user action action into accumulator
     dispatch({

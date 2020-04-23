@@ -50,7 +50,7 @@ export default function DisplayState() {
 
   let displayResult = result
   if (typeof result === 'object') {
-    displayResult = result.toNumber()
+    displayResult = result.toString()
   }
 
   return <Display result={error || displayResult} expression={expression} />

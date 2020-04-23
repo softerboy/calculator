@@ -18,6 +18,8 @@
 // PERFORMANCE OF THIS SOFTWARE.
 import { Decimal } from 'decimal.js-light'
 
+Decimal.config({ precision: 16 })
+
 var MathCalc = (function (module) {
   var MathCalc = function () {
     this.parser = new MathExpression()
@@ -820,7 +822,7 @@ var MathCalc = (function (module) {
       return pos
     }
 
-    var parseNumber = Number.parseFloat || parseFloat
+    var parseNumber = String //Number.parseFloat || parseFloat
 
     function evalToken(id, s) {
       switch (id) {

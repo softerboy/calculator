@@ -34,7 +34,7 @@ export const buttons = {
   BTN_MEM_SUBTRACT: 28,
 }
 
-export const MAX_INPUT_LENGTH = 15
+export const MAX_DIGIT_COUNT = 16
 
 export const icons = {
   PERCENT: '&#xE94C;',

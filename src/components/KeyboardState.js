@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import Keyboard from './Keyboard'
 import { buttons } from '../common/constants'
-import { MAX_INPUT_LENGTH } from '../common/constants'
+import { MAX_DIGIT_COUNT } from '../common/constants'
 import {
   hasFloatingPoint,
   isNumberAction,
@@ -16,6 +16,7 @@ import {
   SET_DISPLAY_RESULT,
   ACCUMULATOR_REPLACE_LAST,
 } from '../store/action-types'
+import Decimal from 'decimal.js-light'
 
 export default function KeyboardState() {
   const dispatch = useDispatch()
@@ -54,7 +55,7 @@ export default function KeyboardState() {
   function onNumberButtonClick(target) {
     // do nothing if current displayed
     // input length max than MAX_INPUT_LENGTH constant
-    const maxInputReached = String(currentResult).length >= MAX_INPUT_LENGTH
+    const maxInputReached = String(currentResult).length >= MAX_DIGIT_COUNT
     if (maxInputReached && !expressionCalculated) return
 
     if (error) setEqualButtonPressed(true)
@@ -65,7 +66,9 @@ export default function KeyboardState() {
     // display input is integer, simply add selected digit
     // to back of current number
     if (error || !hasFloatingPoint(currentResult)) {
-      let payload = { result: currentResult * 10 + target }
+      let payload = {
+        result: new Decimal(currentResult).mul(10).add(target).toString(),
+      }
       if (expressionCalculated) {
         payload = { result: target, error: '' }
         setExpressionCalculated(false)
@@ -87,23 +90,25 @@ export default function KeyboardState() {
   }
 
   function onHelperButtonClick(target) {
-    if (target === buttons.BTN_SIGN && Number(currentResult) !== 0) {
+    if (target === buttons.BTN_SIGN && currentResult === '0') {
       // swap sign
-      const payload = { result: -1 * currentResult }
+      const payload = {
+        result: new Decimal('-1').mul(currentResult).toString(),
+      }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 
     // cancel last user entered input (number)
     // if CE (Cancel Entry) button pressed
     if (target === buttons.BTN_CANCEL_ENTRY) {
-      const payload = { result: 0, error: 0 }
+      const payload = { result: '0', error: '' }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 
     // clear display and stack if C (Clear) button pressed
     if (target === buttons.BTN_CLEAR) {
       dispatch({ type: ACCUMULATOR_CLEAR })
-      const payload = { result: 0, error: '' }
+      const payload = { result: '0', error: '' }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 
@@ -129,10 +134,10 @@ export default function KeyboardState() {
       const resultCharArray = String(currentResult).split('')
       const payload = {}
       if (resultCharArray.length === 1) {
-        payload.result = 0
+        payload.result = '0'
       } else if (resultCharArray.length === 2 && resultCharArray[0] === '-') {
         // case minus (-) with one number
-        payload.result = 0
+        payload.result = '0'
       } else {
         payload.result = resultCharArray.slice(0, -1).join('')
       }

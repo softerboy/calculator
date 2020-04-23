@@ -37,7 +37,7 @@ export function expressionFrom(stack, formatter) {
     if (last.operator === buttons.BTN_EQUAL) {
       return formatOperation(
         last.operator,
-        expressionFrom(stack.slice(0, -1)),
+        expressionFrom(stack.slice(0, -1), formatter),
         formatter,
       )
     }

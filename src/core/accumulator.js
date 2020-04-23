@@ -94,7 +94,17 @@ export function resultScientificFrom(stack) {
 }
 
 export function resultSequentialFrom(stack) {
-  const expr = resultSequentialFromExpression(stack)
+  // return 0 (zero) if accumulator stack is empty
+  if (!stack.length) return 0
+
+  const last = stack[stack.length - 1]
+  const isLastEqualBtn = last.operator.id !== buttons.BTN_EQUAL
+  let expr = expressionSequentialFrom(stack)
+  if (isUnaryOperator(last.operator) && isLastEqualBtn) {
+    expr = seqFmt(last.operator, last.operand)
+    return calc(expr)
+  }
+
   return calc(String(expr))
 }
 
@@ -108,7 +118,7 @@ export function resultSequentialFrom(stack) {
  * but in sequential calculating, result of above expression should be 15.
  * Which is calculated in left to right order
  */
-export function resultSequentialFromExpression(stack) {
+export function expressionSequentialFrom(stack) {
   if (!stack.length) return 0
 
   let initial = stack[0].operand
@@ -132,10 +142,37 @@ export function resultSequentialFromExpression(stack) {
       )
     } else if (isFirstUnary && !isSecondUnary) {
       // return wb(acc + seqFmt(second.operator, second.operand))
-      return wb(resultSequentialFrom(stack.slice(0, -1)))
+      return wb(calc(expressionSequentialFrom(stack.slice(0, -1))))
     }
 
-    return wb(seqFmt(second.operator, resultSequentialFrom(stack.slice(0, -1))))
+    // find last index of binary operation in stack
+    // here slice used to copy stack to new array, without it
+    // reverse() call will mutate original stack
+    const index2 = stack
+      .slice()
+      .reverse()
+      .findIndex(function (element) {
+        return !isUnaryOperator(element.operator)
+      })
+
+    // if operation stack contains mix of binary and unary operations,
+    // divide them from last binary operation index and calculate expression
+    // for each and last simply concatenate them (divide and conquer principle)
+    if (index2 > -1) {
+      const lastBinaryIndex = stack.length - index
+      const firstPart = stack.slice(0, lastBinaryIndex)
+      const secondPart = stack.slice(lastBinaryIndex)
+      return (
+        expressionSequentialFrom(firstPart) +
+        seqFmt(
+          firstPart[lastBinaryIndex - 1].operator,
+          expressionSequentialFrom(secondPart),
+        )
+      )
+    }
+
+    const prev = calc(expressionSequentialFrom(stack.slice(0, -1)))
+    return wb(seqFmt(second.operator, prev))
   }, '' + initial)
 }
 

@@ -1,5 +1,9 @@
 import { buttons } from '../common/constants'
 
+export function hasFloatingPoint(number) {
+  return String(number).indexOf('.') > -1
+}
+
 export function toFixedNumber(num, digits, base) {
   const pow = Math.pow(base || 10, digits)
   return Math.round(num * pow) / pow

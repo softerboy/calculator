@@ -4,7 +4,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import Keyboard from './Keyboard'
 import { buttons } from '../common/constants'
 import { MAX_INPUT_LENGTH } from '../common/constants'
-import { isNumberAction, isOperatorAction, isUnaryOperator } from '../core/util'
+import {
+  hasFloatingPoint,
+  isNumberAction,
+  isOperatorAction,
+  isUnaryOperator,
+} from '../core/util'
 import {
   ACCUMULATOR_PUSH,
   ACCUMULATOR_CLEAR,
@@ -59,7 +64,7 @@ export default function KeyboardState() {
     // in case of user pressed digit button and current
     // display input is integer, simply add selected digit
     // to back of current number
-    if (error || Number.isInteger(currentResult)) {
+    if (error || !hasFloatingPoint(currentResult)) {
       let payload = { result: currentResult * 10 + target }
       if (expressionCalculated) {
         payload = { result: target, error: '' }
@@ -71,9 +76,9 @@ export default function KeyboardState() {
     // in case if user pressed digit button and current display
     // number is floating point, simply put entered digit to
     // back of current number
-    if (error || !Number.isInteger(currentResult)) {
+    if (error || hasFloatingPoint(currentResult)) {
       let payload = { result: currentResult + '' + target }
-      if (expressionCalculated) {
+      if (expressionCalculated && isLastOperationButtonPressed) {
         payload = { result: target, error: '' }
         setExpressionCalculated(false)
       }
@@ -106,11 +111,15 @@ export default function KeyboardState() {
     // display input integer or floating point number already
     // We no need to add floating point twice if already exist in
     // current display input
-    if (
-      String(currentResult).indexOf('.') < 0 &&
-      target === buttons.BTN_FLOATING_POINT
-    ) {
-      const payload = { result: currentResult + '.' }
+    const inputNotContainsPoint = String(currentResult).indexOf('.') < 0
+    if (target === buttons.BTN_FLOATING_POINT && inputNotContainsPoint) {
+      let payload = { result: currentResult + '.' }
+      return dispatch({ type: SET_DISPLAY_RESULT, payload })
+    }
+
+    if (target === buttons.BTN_FLOATING_POINT && expressionCalculated) {
+      let payload = { result: '0.' }
+      setExpressionCalculated(false)
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 

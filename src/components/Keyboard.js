@@ -29,7 +29,7 @@ export default function Keyboard(props) {
         block
         constiant="dark"
         className={className}
-        onClick={props.onClick.bind(this, button)}
+        onClick={props.onClick.bind(this, button.id)}
       >
         <span dangerouslySetInnerHTML={{ __html: button.symbol }} />
       </Button>

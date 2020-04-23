@@ -60,9 +60,9 @@ export default function KeyboardState() {
     // display input is integer, simply add selected digit
     // to back of current number
     if (error || Number.isInteger(currentResult)) {
-      let payload = { result: currentResult * 10 + target.id }
+      let payload = { result: currentResult * 10 + target }
       if (expressionCalculated) {
-        payload = { result: target.id, error: '' }
+        payload = { result: target, error: '' }
         setExpressionCalculated(false)
       }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
@@ -72,9 +72,9 @@ export default function KeyboardState() {
     // number is floating point, simply put entered digit to
     // back of current number
     if (error || !Number.isInteger(currentResult)) {
-      let payload = { result: currentResult + '' + target.id }
+      let payload = { result: currentResult + '' + target }
       if (expressionCalculated) {
-        payload = { result: target.id, error: '' }
+        payload = { result: target, error: '' }
         setExpressionCalculated(false)
       }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
@@ -82,7 +82,7 @@ export default function KeyboardState() {
   }
 
   function onHelperButtonClick(target) {
-    if (target.id === buttons.BTN_SIGN && Number(currentResult) !== 0) {
+    if (target === buttons.BTN_SIGN && Number(currentResult) !== 0) {
       // swap sign
       const payload = { result: -1 * currentResult }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
@@ -90,13 +90,13 @@ export default function KeyboardState() {
 
     // cancel last user entered input (number)
     // if CE (Cancel Entry) button pressed
-    if (target.id === buttons.BTN_CANCEL_ENTRY) {
+    if (target === buttons.BTN_CANCEL_ENTRY) {
       const payload = { result: 0, error: 0 }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 
     // clear display and stack if C (Clear) button pressed
-    if (target.id === buttons.BTN_CLEAR) {
+    if (target === buttons.BTN_CLEAR) {
       dispatch({ type: ACCUMULATOR_CLEAR })
       const payload = { result: 0, error: '' }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
@@ -108,7 +108,7 @@ export default function KeyboardState() {
     // current display input
     if (
       String(currentResult).indexOf('.') < 0 &&
-      target.id === buttons.BTN_FLOATING_POINT
+      target === buttons.BTN_FLOATING_POINT
     ) {
       const payload = { result: currentResult + '.' }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
@@ -116,7 +116,7 @@ export default function KeyboardState() {
 
     // if user entered Remove button simply remove last entered
     // digit or floating point from display
-    if (target.id === buttons.BTN_REMOVE) {
+    if (target === buttons.BTN_REMOVE) {
       const resultCharArray = String(currentResult).split('')
       const payload = {}
       if (resultCharArray.length === 1) {
@@ -132,7 +132,7 @@ export default function KeyboardState() {
   }
 
   function onOperatorButtonClick(target) {
-    if (target.id === buttons.BTN_EQUAL) {
+    if (target === buttons.BTN_EQUAL) {
       setEqualButtonPressed(true)
     }
 

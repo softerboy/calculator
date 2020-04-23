@@ -10,7 +10,7 @@ export function expressionFrom(stack, formatter) {
   const { operator, operand } = stack[0]
 
   if (stack.length === 1) {
-    if (operator.id === buttons.BTN_PERCENT) return '0'
+    if (operator === buttons.BTN_PERCENT) return '0'
     return formatOperation(operator, operand, formatter)
   }
 
@@ -18,7 +18,7 @@ export function expressionFrom(stack, formatter) {
   const beforeLast = stack[stack.length - 2]
 
   // calculate all expression so far, and divide by 100
-  if (last.operator.id === buttons.BTN_PERCENT) {
+  if (last.operator === buttons.BTN_PERCENT) {
     const expressionTillPercentOp = calc(
       expressionSequentialFrom(stack.slice(0, -1)),
     )
@@ -34,7 +34,7 @@ export function expressionFrom(stack, formatter) {
   }
 
   if (isUnaryOperator(last.operator) && isUnaryOperator(beforeLast.operator)) {
-    if (last.operator.id === buttons.BTN_EQUAL) {
+    if (last.operator === buttons.BTN_EQUAL) {
       return formatOperation(
         last.operator,
         expressionFrom(stack.slice(0, -1)),
@@ -102,9 +102,12 @@ export function resultScientificFrom(stack) {
 
   // in case user just pressed equal button on empty screen
   // simply return entered number
-  if (stack.length === 1 && lastOperation.operator.id === buttons.BTN_EQUAL) {
+  if (stack.length === 1 && lastOperation.operator === buttons.BTN_EQUAL) {
     return lastOperation.operand
-  } else if (stack.length === 1 && lastOperation.id === buttons.BTN_PERCENT) {
+  } else if (
+    stack.length === 1 &&
+    lastOperation.operator === buttons.BTN_PERCENT
+  ) {
     return 0 // we can't calculate percent of single number, there's no any logic
   }
 
@@ -125,13 +128,13 @@ export function resultSequentialFrom(stack) {
 
   const last = stack[stack.length - 1]
 
-  if (stack.length === 1 && last.operator.id === buttons.BTN_PERCENT) {
+  if (stack.length === 1 && last.operator === buttons.BTN_PERCENT) {
     return 0 // we can't calculate percent of single number, there's no any logic
   }
 
-  const isLastNotEqualBtn = last.operator.id !== buttons.BTN_EQUAL
+  const isLastNotEqualBtn = last.operator !== buttons.BTN_EQUAL
   let expr = expressionSequentialFrom(stack)
-  const isLastPercentButton = last.operator.id === buttons.BTN_PERCENT
+  const isLastPercentButton = last.operator === buttons.BTN_PERCENT
   if (isLastPercentButton) return calc(expr)
 
   // display last binary operation result instead whole expr result
@@ -170,7 +173,7 @@ export function expressionSequentialFrom(stack) {
     const isSecondUnary = isUnaryOperator(second.operator)
 
     // calculate all expression so far, and divide by 100
-    if (second.operator.id === buttons.BTN_PERCENT) {
+    if (second.operator === buttons.BTN_PERCENT) {
       const expressionTillPercentOp = calc(
         expressionSequentialFrom(stack.slice(0, -1)),
       )
@@ -196,7 +199,7 @@ export function expressionSequentialFrom(stack) {
       return wb(calc(expressionSequentialFrom(stack.slice(0, -1))))
     }
 
-    if (second.operator.id === buttons.BTN_EQUAL) {
+    if (second.operator === buttons.BTN_EQUAL) {
       return expressionSequentialFrom(stack.slice(0, -1))
     }
 
@@ -241,35 +244,35 @@ export function resultFrom(stack, scientific = false) {
 }
 
 function seqFmt(operation, operand) {
-  if (operation.id === buttons.BTN_ADD) {
+  if (operation === buttons.BTN_ADD) {
     return sequentialFormatter.add(operand)
   }
 
-  if (operation.id === buttons.BTN_SUBTRACT) {
+  if (operation === buttons.BTN_SUBTRACT) {
     return sequentialFormatter.subtract(operand)
   }
 
-  if (operation.id === buttons.BTN_MULTIPLY) {
+  if (operation === buttons.BTN_MULTIPLY) {
     return sequentialFormatter.multiply(operand)
   }
 
-  if (operation.id === buttons.BTN_DIVIDE) {
+  if (operation === buttons.BTN_DIVIDE) {
     return sequentialFormatter.divide(operand)
   }
 
-  if (operation.id === buttons.BTN_ONE_DIVIDE_BY) {
+  if (operation === buttons.BTN_ONE_DIVIDE_BY) {
     return sequentialFormatter.oneDividedBy(operand)
   }
 
-  if (operation.id === buttons.BTN_SQUARE_ROOT) {
+  if (operation === buttons.BTN_SQUARE_ROOT) {
     return sequentialFormatter.squareRoot(operand)
   }
 
-  if (operation.id === buttons.BTN_SQUARE) {
+  if (operation === buttons.BTN_SQUARE) {
     return sequentialFormatter.square(operand)
   }
 
-  if (operation.id === buttons.BTN_PERCENT) {
+  if (operation === buttons.BTN_PERCENT) {
     return sequentialFormatter.percent(operand)
   }
 

@@ -1,6 +1,7 @@
 import calc from './calc'
 import { buttons } from '../common/constants'
 import mathcalcFormatter from './formatter/mathcalc'
+import sequentialFormatter from './formatter/sequential'
 import { formatOperation, isUnaryOperator } from './util'
 
 // generates expression string from user entered operations
@@ -92,21 +93,9 @@ export function resultScientificFrom(stack) {
   return calc(expression.slice(0, -1))
 }
 
-function calculateUnary(operator, operand) {
-  if (operator.id === buttons.BTN_SQUARE_ROOT) {
-    return Math.sqrt(Number(operand))
-  }
-
-  if (operator.id === buttons.BTN_SQUARE) {
-    return Math.pow(Number(operand), 2)
-  }
-
-  if (operator.id === buttons.BTN_ONE_DIVIDE_BY) {
-    return 1 / Number(operand)
-  }
-
-  return operand
-  // throw new Error('Not an unary operator')
+export function resultSequentialFrom(stack) {
+  const expr = resultSequentialFromExpression(stack)
+  return calc(String(expr))
 }
 
 /*
@@ -119,52 +108,76 @@ function calculateUnary(operator, operand) {
  * but in sequential calculating, result of above expression should be 15.
  * Which is calculated in left to right order
  */
-export function resultSequentialFrom(stack) {
+export function resultSequentialFromExpression(stack) {
   if (!stack.length) return 0
 
+  let initial = stack[0].operand
+  if (isUnaryOperator(stack[0].operator)) {
+    initial = calc(seqFmt(stack[0].operator, stack[0].operand))
+  }
+
   return stack.reduce(function (acc, curr, index) {
-    if (index === 0) return acc + calculateUnary(curr.operator, curr.operand)
+    if (index === stack.length - 1) return acc
+    const first = curr
+    const second = stack[index + 1]
 
-    const before = stack[index - 1]
-    const { operand } = curr
+    const isFirstUnary = isUnaryOperator(first.operator)
+    const isSecondUnary = isUnaryOperator(second.operator)
 
-    if (
-      before.operator.id === buttons.BTN_ADD &&
-      !isUnaryOperator(curr.operator)
-    ) {
-      return acc + Number(operand)
+    if (!isFirstUnary && !isSecondUnary) {
+      return wb(acc + seqFmt(first.operator, second.operand))
+    } else if (!isFirstUnary && isSecondUnary) {
+      return wb(
+        acc + seqFmt(first.operator, seqFmt(second.operator, second.operand)),
+      )
+    } else if (isFirstUnary && !isSecondUnary) {
+      // return wb(acc + seqFmt(second.operator, second.operand))
+      return wb(resultSequentialFrom(stack.slice(0, -1)))
     }
 
-    if (
-      before.operator.id === buttons.BTN_SUBTRACT &&
-      !isUnaryOperator(curr.operator)
-    ) {
-      return acc - Number(operand)
-    }
+    return wb(seqFmt(second.operator, resultSequentialFrom(stack.slice(0, -1))))
+  }, '' + initial)
+}
 
-    if (
-      before.operator.id === buttons.BTN_MULTIPLY &&
-      !isUnaryOperator(curr.operator)
-    ) {
-      return acc * Number(operand)
-    }
-
-    if (
-      before.operator.id === buttons.BTN_DIVIDE &&
-      !isUnaryOperator(curr.operator)
-    ) {
-      return acc / Number(operand)
-    }
-
-    if (isUnaryOperator(before.operator)) {
-      return calculateUnary(curr.operator, operand)
-    }
-
-    return acc + calculateUnary(curr.operator, operand)
-  }, 0)
+function wb(expr) {
+  return '(' + expr + ')'
 }
 
 export function resultFrom(stack, scientific = false) {
   if (scientific) return resultScientificFrom(stack)
   return resultSequentialFrom(stack)
+}
+
+function seqFmt(operation, operand) {
+  if (operation.id === buttons.BTN_ADD) {
+    return sequentialFormatter.add(operand)
+  }
+
+  if (operation.id === buttons.BTN_SUBTRACT) {
+    return sequentialFormatter.subtract(operand)
+  }
+
+  if (operation.id === buttons.BTN_MULTIPLY) {
+    return sequentialFormatter.multiply(operand)
+  }
+
+  if (operation.id === buttons.BTN_DIVIDE) {
+    return sequentialFormatter.divide(operand)
+  }
+
+  if (operation.id === buttons.BTN_ONE_DIVIDE_BY) {
+    return sequentialFormatter.oneDividedBy(operand)
+  }
+
+  if (operation.id === buttons.BTN_SQUARE_ROOT) {
+    return sequentialFormatter.squareRoot(operand)
+  }
+
+  if (operation.id === buttons.BTN_SQUARE) {
+    return sequentialFormatter.square(operand)
+  }
+
+  //
+  return operand
+  // throw new Error('No formatter method found')
 }

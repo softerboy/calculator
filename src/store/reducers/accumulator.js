@@ -1,7 +1,7 @@
 import {
   ACCUMULATOR_CLEAR,
-  ACCUMULATOR_POP,
   ACCUMULATOR_PUSH,
+  ACCUMULATOR_REPLACE_LAST,
 } from '../action-types'
 
 // on begin we have an empty accumulator stack
@@ -14,8 +14,8 @@ export default function accumulator(state = initialState, action) {
     return [...state, action.payload]
   }
 
-  if (type === ACCUMULATOR_POP) {
-    return state.slice(0, -1) // remove last element
+  if (type === ACCUMULATOR_REPLACE_LAST) {
+    return state.slice(0, -1).concat([action.payload])
   }
 
   if (type === ACCUMULATOR_CLEAR) {

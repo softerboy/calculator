@@ -4,20 +4,29 @@ import { useDispatch, useSelector } from 'react-redux'
 import Keyboard from './Keyboard'
 import { buttons } from '../common/constants'
 import { MAX_INPUT_LENGTH } from '../common/constants'
-import { isNumberAction, isOperatorAction } from '../core/util'
+import { isNumberAction, isOperatorAction, isUnaryOperator } from '../core/util'
 import {
-  ACCUMULATOR_CLEAR,
   ACCUMULATOR_PUSH,
+  ACCUMULATOR_CLEAR,
   SET_DISPLAY_RESULT,
+  ACCUMULATOR_REPLACE_LAST,
 } from '../store/action-types'
 
 export default function KeyboardState() {
   const dispatch = useDispatch()
-  const [expressionCalculated, changeExpressionCalculatedTo] = useState(false)
   const [equalButtonPressed, setEqualButtonPressed] = useState(false)
+  const [expressionCalculated, setExpressionCalculated] = useState(false)
+  const [
+    isLastOperationButtonPressed,
+    setIsLastOperationButtonPressed,
+  ] = useState(false)
 
   const { result: currentResult, error } = useSelector(function (state) {
     return state.display
+  })
+
+  const stack = useSelector(function (state) {
+    return state.accumulator
   })
 
   function onClick(target) {
@@ -45,6 +54,8 @@ export default function KeyboardState() {
 
     if (error) setEqualButtonPressed(true)
 
+    setIsLastOperationButtonPressed(false)
+
     // in case of user pressed digit button and current
     // display input is integer, simply add selected digit
     // to back of current number
@@ -52,7 +63,7 @@ export default function KeyboardState() {
       let payload = { result: currentResult * 10 + target.id }
       if (expressionCalculated) {
         payload = { result: target.id, error: '' }
-        changeExpressionCalculatedTo(false)
+        setExpressionCalculated(false)
       }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
@@ -64,7 +75,7 @@ export default function KeyboardState() {
       let payload = { result: currentResult + '' + target.id }
       if (expressionCalculated) {
         payload = { result: target.id, error: '' }
-        changeExpressionCalculatedTo(false)
+        setExpressionCalculated(false)
       }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
@@ -125,7 +136,23 @@ export default function KeyboardState() {
       setEqualButtonPressed(true)
     }
 
-    changeExpressionCalculatedTo(true)
+    if (isLastOperationButtonPressed && !isUnaryOperator(target)) {
+      setIsLastOperationButtonPressed(true)
+
+      const lastItem = stack[stack.length - 1]
+
+      return dispatch({
+        type: ACCUMULATOR_REPLACE_LAST,
+        payload: {
+          operand: lastItem.operand,
+          operator: target,
+        },
+      })
+    }
+
+    setExpressionCalculated(true)
+    setIsLastOperationButtonPressed(true)
+
     // push last user action action into accumulator
     dispatch({
       type: ACCUMULATOR_PUSH,

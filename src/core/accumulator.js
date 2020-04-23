@@ -7,16 +7,40 @@ import { formatOperation, isUnaryOperator } from './util'
 // generates expression string from user entered operations
 export function expressionFrom(stack, formatter) {
   if (stack.length === 0) return ''
+  const { operator, operand } = stack[0]
 
   if (stack.length === 1) {
-    const { operator, operand } = stack[0]
+    if (operator.id === buttons.BTN_PERCENT) return '0'
     return formatOperation(operator, operand, formatter)
   }
 
   const last = stack[stack.length - 1]
   const beforeLast = stack[stack.length - 2]
 
+  // calculate all expression so far, and divide by 100
+  if (last.operator.id === buttons.BTN_PERCENT) {
+    const expressionTillPercentOp = calc(
+      expressionSequentialFrom(stack.slice(0, -1)),
+    )
+
+    const p =
+      expressionTillPercentOp +
+      seqFmt(
+        beforeLast.operator,
+        seqFmt(last.operator, expressionTillPercentOp * last.operand),
+      )
+
+    return p
+  }
+
   if (isUnaryOperator(last.operator) && isUnaryOperator(beforeLast.operator)) {
+    if (last.operator.id === buttons.BTN_EQUAL) {
+      return formatOperation(
+        last.operator,
+        expressionFrom(stack.slice(0, -1)),
+        formatter,
+      )
+    }
     // find last index of binary operation in stack
     // here slice used to copy stack to new array, without it
     // reverse() call will mutate original stack
@@ -80,6 +104,8 @@ export function resultScientificFrom(stack) {
   // simply return entered number
   if (stack.length === 1 && lastOperation.operator.id === buttons.BTN_EQUAL) {
     return lastOperation.operand
+  } else if (stack.length === 1 && lastOperation.id === buttons.BTN_PERCENT) {
+    return 0 // we can't calculate percent of single number, there's no any logic
   }
 
   // in case of last operator is unary,
@@ -98,9 +124,18 @@ export function resultSequentialFrom(stack) {
   if (!stack.length) return 0
 
   const last = stack[stack.length - 1]
-  const isLastEqualBtn = last.operator.id !== buttons.BTN_EQUAL
+
+  if (stack.length === 1 && last.operator.id === buttons.BTN_PERCENT) {
+    return 0 // we can't calculate percent of single number, there's no any logic
+  }
+
+  const isLastNotEqualBtn = last.operator.id !== buttons.BTN_EQUAL
   let expr = expressionSequentialFrom(stack)
-  if (isUnaryOperator(last.operator) && isLastEqualBtn) {
+  const isLastPercentButton = last.operator.id === buttons.BTN_PERCENT
+  if (isLastPercentButton) return calc(expr)
+
+  // display last binary operation result instead whole expr result
+  if (isUnaryOperator(last.operator) && isLastNotEqualBtn) {
     expr = seqFmt(last.operator, last.operand)
     return calc(expr)
   }
@@ -134,6 +169,22 @@ export function expressionSequentialFrom(stack) {
     const isFirstUnary = isUnaryOperator(first.operator)
     const isSecondUnary = isUnaryOperator(second.operator)
 
+    // calculate all expression so far, and divide by 100
+    if (second.operator.id === buttons.BTN_PERCENT) {
+      const expressionTillPercentOp = calc(
+        expressionSequentialFrom(stack.slice(0, -1)),
+      )
+
+      const p =
+        expressionTillPercentOp +
+        seqFmt(
+          first.operator,
+          seqFmt(second.operator, expressionTillPercentOp * second.operand),
+        )
+
+      return p
+    }
+
     if (!isFirstUnary && !isSecondUnary) {
       return wb(acc + seqFmt(first.operator, second.operand))
     } else if (!isFirstUnary && isSecondUnary) {
@@ -143,6 +194,10 @@ export function expressionSequentialFrom(stack) {
     } else if (isFirstUnary && !isSecondUnary) {
       // return wb(acc + seqFmt(second.operator, second.operand))
       return wb(calc(expressionSequentialFrom(stack.slice(0, -1))))
+    }
+
+    if (second.operator.id === buttons.BTN_EQUAL) {
+      return expressionSequentialFrom(stack.slice(0, -1))
     }
 
     // find last index of binary operation in stack
@@ -212,6 +267,10 @@ function seqFmt(operation, operand) {
 
   if (operation.id === buttons.BTN_SQUARE) {
     return sequentialFormatter.square(operand)
+  }
+
+  if (operation.id === buttons.BTN_PERCENT) {
+    return sequentialFormatter.percent(operand)
   }
 
   //

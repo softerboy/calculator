@@ -19,7 +19,7 @@ export default {
   },
 
   percent(operand) {
-    return String(Number(operand) / 100)
+    return '' + Number(operand) / 100
   },
 
   divide(operand) {

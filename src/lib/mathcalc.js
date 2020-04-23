@@ -16,8 +16,7 @@
 // LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
-
-'use strict'
+import { Decimal } from 'decimal.js-light'
 
 var MathCalc = (function (module) {
   var MathCalc = function () {
@@ -295,27 +294,27 @@ var MathCalc = (function (module) {
       switch (op.id) {
         case 'Plus':
           return bifunc.bind(self, function (x, y) {
-            return +x + y
+            return new Decimal(x).add(y)
           })
         case 'Minus':
           return bifunc.bind(self, function (x, y) {
-            return x - y
+            return new Decimal(x).sub(y)
           })
         case 'Mul':
           return bifunc.bind(self, function (x, y) {
-            return x * y
+            return new Decimal(x).mul(y)
           })
         case 'Div':
           return bifunc.bind(self, function (x, y) {
-            return x / y
+            return new Decimal(x).div(y)
           })
         case 'Mod':
           return bifunc.bind(self, function (x, y) {
-            return x % y
+            return new Decimal(x).mod(y)
           })
         case 'Pow':
           return bifunc.bind(self, function (x, y) {
-            return Math.pow(x, y)
+            return new Decimal(x).pow(y)
           })
       }
       logger.warn('No emitter for %o', op)

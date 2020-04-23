@@ -8,13 +8,13 @@ describe('Calculator', function () {
       .click(12, buttons.BTN_ADD)
       .click(8, buttons.BTN_EQUAL)
       .calculate()
-    expect(integerAddition).toBe(12 + 8)
+    expect(integerAddition).toBe('20')
 
     const floatingPointAddition = Calculator.newInstance()
       .click(12.5, buttons.BTN_ADD)
       .click(3.5, buttons.BTN_EQUAL)
       .calculate()
-    expect(floatingPointAddition).toBe(12.5 + 3.5)
+    expect(floatingPointAddition).toBe('16')
   })
 
   // ============= subtracting two numbers ============= //
@@ -23,13 +23,13 @@ describe('Calculator', function () {
       .click(12, buttons.BTN_SUBTRACT)
       .click(8, buttons.BTN_EQUAL)
       .calculate()
-    expect(integerSubtraction).toBe(12 - 8)
+    expect(integerSubtraction).toBe('4')
 
     const floatingPointSubtraction = Calculator.newInstance()
       .click(12.5, buttons.BTN_SUBTRACT)
       .click(3.5, buttons.BTN_EQUAL)
       .calculate()
-    expect(floatingPointSubtraction).toBe(12.5 - 3.5)
+    expect(floatingPointSubtraction).toBe('9')
   })
 
   // ========== multiplying ============== //
@@ -38,13 +38,13 @@ describe('Calculator', function () {
       .click(12, buttons.BTN_MULTIPLY)
       .click(8, buttons.BTN_EQUAL)
       .calculate()
-    expect(integerMultiplication).toBe(12 * 8)
+    expect(integerMultiplication).toBe('96')
 
     const floatingPointMultiplication = Calculator.newInstance()
       .click(12.5, buttons.BTN_MULTIPLY)
       .click(3.5, buttons.BTN_EQUAL)
       .calculate()
-    expect(floatingPointMultiplication).toBe(12.5 * 3.5)
+    expect(floatingPointMultiplication).toBe('43.75')
   })
 
   // ========= dividing ================== //
@@ -53,13 +53,13 @@ describe('Calculator', function () {
       .click(12, buttons.BTN_DIVIDE)
       .click(8, buttons.BTN_EQUAL)
       .calculate()
-    expect(integerDividing).toBe(12 / 8)
+    expect(integerDividing).toBe('1.5')
 
     const floatingPointDividing = Calculator.newInstance()
       .click(8.4, buttons.BTN_DIVIDE)
       .click(3, buttons.BTN_EQUAL)
       .calculate()
-    expect(floatingPointDividing).toBe(8.4 / 3)
+    expect(floatingPointDividing).toBe('2.8')
   })
 
   // ========== divide by zero ==================
@@ -99,6 +99,6 @@ describe('Calculator', function () {
       // get the display result
       .calculate()
 
-    expect(difficultExpressionResult).toBe(8.875)
+    expect(difficultExpressionResult).toBe('8.875')
   })
 })

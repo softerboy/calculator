@@ -27,13 +27,13 @@ export default function DisplayState() {
       const res = resultFrom(stack)
 
       let payload = { result: res }
-      // if (!isFinite(res)) {
-      //   payload = { error: 'Cannot divide by zero', result: 0 }
-      // }
-      //
-      // if (isNaN(res)) {
-      //   payload = { error: 'Invalid argument', result: 0 }
-      // }
+      if (!isFinite(res)) {
+        payload = { error: 'Cannot divide by zero', result: 0 }
+      }
+
+      if (isNaN(res)) {
+        payload = { error: 'Invalid argument', result: 0 }
+      }
 
       dispatch({
         type: SET_DISPLAY_RESULT,
@@ -47,5 +47,11 @@ export default function DisplayState() {
     /-/g,
     htmlSymbols.MINUS,
   )
-  return <Display result={error || result} expression={expression} />
+
+  let displayResult = result
+  if (typeof result === 'object') {
+    displayResult = result.toNumber()
+  }
+
+  return <Display result={error || displayResult} expression={expression} />
 }

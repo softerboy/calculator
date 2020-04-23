@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Display from './Display'
-import formatter from '../core/formatter/readable'
+import formatter from '../core/tokenizer/readable'
 import { htmlSymbols } from '../common/constants'
 import { SET_DISPLAY_RESULT } from '../store/action-types'
 import { expressionFrom, resultFrom } from '../core/accumulator'

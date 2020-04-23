@@ -1,7 +1,7 @@
 import calc from './calc'
 import { buttons } from '../common/constants'
-import mathcalcFormatter from './formatter/mathcalc'
-import sequentialFormatter from './formatter/sequential'
+import mathcalcFormatter from './tokenizer/mathcalc'
+import sequentialFormatter from './tokenizer/sequential'
 import { formatOperation, isUnaryOperator } from './util'
 
 // generates expression string from user entered operations

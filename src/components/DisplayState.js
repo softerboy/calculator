@@ -2,8 +2,9 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Display from './Display'
-import formatter from '../core/tokenizer/readable'
+import { format } from '../core/string-utils'
 import { htmlSymbols } from '../common/constants'
+import readable from '../core/tokenizer/readable'
 import { SET_DISPLAY_RESULT } from '../store/action-types'
 import { expressionFrom, resultFrom } from '../core/accumulator'
 
@@ -43,7 +44,7 @@ export default function DisplayState() {
     [stack, dispatch],
   )
 
-  const expression = String(expressionFrom(stack, formatter)).replace(
+  const expression = String(expressionFrom(stack, readable)).replace(
     /-/g,
     htmlSymbols.MINUS,
   )
@@ -53,5 +54,6 @@ export default function DisplayState() {
     displayResult = result.toString()
   }
 
-  return <Display result={error || displayResult} expression={expression} />
+  const formatted = format(String(displayResult))
+  return <Display result={error || formatted} expression={expression} />
 }

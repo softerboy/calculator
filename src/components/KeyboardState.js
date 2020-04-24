@@ -17,6 +17,7 @@ import {
   ACCUMULATOR_REPLACE_LAST,
 } from '../store/action-types'
 import Decimal from 'decimal.js-light'
+import { unformat } from '../core/string-utils'
 
 export default function KeyboardState() {
   const dispatch = useDispatch()
@@ -27,13 +28,15 @@ export default function KeyboardState() {
     setIsLastOperationButtonPressed,
   ] = useState(false)
 
-  const { result: currentResult, error } = useSelector(function (state) {
+  const { result: formattedResult, error } = useSelector(function (state) {
     return state.display
   })
 
   const stack = useSelector(function (state) {
     return state.accumulator
   })
+
+  const currentResult = unformat(formattedResult)
 
   function onClick(target) {
     if (equalButtonPressed) {

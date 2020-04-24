@@ -167,15 +167,17 @@ export default function KeyboardState() {
     if (isLastOperationButtonPressed && !isUnaryOperator(target)) {
       setIsLastOperationButtonPressed(true)
 
-      const lastItem = stack[stack.length - 1]
+      if (stack.length) {
+        const lastItem = stack[stack.length - 1]
 
-      return dispatch({
-        type: ACCUMULATOR_REPLACE_LAST,
-        payload: {
-          operand: lastItem.operand,
-          operator: target,
-        },
-      })
+        return dispatch({
+          type: ACCUMULATOR_REPLACE_LAST,
+          payload: {
+            operand: lastItem.operand,
+            operator: target,
+          },
+        })
+      }
     }
 
     setExpressionCalculated(true)

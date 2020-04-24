@@ -2,8 +2,7 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Keyboard from './Keyboard'
-import { buttons } from '../common/constants'
-import { MAX_DIGIT_COUNT } from '../common/constants'
+import { buttons, MAX_DIGIT_COUNT } from '../common/constants'
 import {
   hasFloatingPoint,
   isNumberAction,
@@ -11,10 +10,10 @@ import {
   isUnaryOperator,
 } from '../core/util'
 import {
-  ACCUMULATOR_PUSH,
   ACCUMULATOR_CLEAR,
-  SET_DISPLAY_RESULT,
+  ACCUMULATOR_PUSH,
   ACCUMULATOR_REPLACE_LAST,
+  SET_DISPLAY_RESULT,
 } from '../store/action-types'
 import Decimal from 'decimal.js-light'
 import { unformat } from '../core/string-utils'
@@ -115,6 +114,12 @@ export default function KeyboardState() {
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 
+    if (target === buttons.BTN_FLOATING_POINT && expressionCalculated) {
+      let payload = { result: '0.' }
+      setExpressionCalculated(false)
+      return dispatch({ type: SET_DISPLAY_RESULT, payload })
+    }
+
     // in case of pressing floating point button, check is current
     // display input integer or floating point number already
     // We no need to add floating point twice if already exist in
@@ -122,12 +127,6 @@ export default function KeyboardState() {
     const inputNotContainsPoint = String(currentResult).indexOf('.') < 0
     if (target === buttons.BTN_FLOATING_POINT && inputNotContainsPoint) {
       let payload = { result: currentResult + '.' }
-      return dispatch({ type: SET_DISPLAY_RESULT, payload })
-    }
-
-    if (target === buttons.BTN_FLOATING_POINT && expressionCalculated) {
-      let payload = { result: '0.' }
-      setExpressionCalculated(false)
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }
 

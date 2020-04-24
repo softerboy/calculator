@@ -93,10 +93,10 @@ export default function KeyboardState() {
   }
 
   function onHelperButtonClick(target) {
-    if (target === buttons.BTN_SIGN && currentResult === '0') {
+    if (target === buttons.BTN_SIGN && currentResult !== '0') {
       // swap sign
       const payload = {
-        result: new Decimal('-1').mul(currentResult).toString(),
+        result: new Decimal(currentResult).mul(-1).toString(),
       }
       return dispatch({ type: SET_DISPLAY_RESULT, payload })
     }

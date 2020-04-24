@@ -15,11 +15,11 @@ export default function MainLayout() {
     <Row className="flex-grow-1" noGutters>
       {/*left col with result display text and buttons*/}
       <Col md={9} className="d-flex flex-column">
-        <Row>
+        <Row noGutters>
           <Col className="text-white text-right">
             <div className="d-flex justify-content-end">
               <Button
-                dangerouslySetInnerHTML={{ __html: icons.TRASH }}
+                dangerouslySetInnerHTML={{ __html: icons.CLOCK }}
                 className="rounded-0 p-3 memory-button d-md-none d-sm-block"
               />
             </div>
@@ -27,7 +27,7 @@ export default function MainLayout() {
             <MemoryToolbar />
           </Col>
         </Row>
-        <Row className="flex-grow-1">
+        <Row className="flex-grow-1" noGutters>
           <Col className="d-flex flex-column flex-grow-1">
             <KeyboardState />
           </Col>

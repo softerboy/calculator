@@ -9,7 +9,7 @@ export default function History(props) {
   const { history, emptyWarn } = props
 
   if (!history || !Array.isArray(history) || !history.length) {
-    return <div className="text-left">{emptyWarn}</div>
+    return <div className="text-left pl-2 pt-3 pr-2">{emptyWarn}</div>
   }
 
   function renderHistory(history) {

@@ -8,8 +8,11 @@ export default function HistoryItem(props) {
   return (
     <ListGroupItem action className="text-right">
       <div>
-        <div className="text-secondary">{expression}</div>
-        <div className="text-white" style={{ fontSize: '1.5rem' }}>
+        <div
+          className="text-secondary"
+          dangerouslySetInnerHTML={{ __html: expression }}
+        />
+        <div className="text-white" style={{ fontSize: '1.3rem' }}>
           {result}
         </div>
       </div>

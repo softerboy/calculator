@@ -16,15 +16,15 @@ export default function RightTabs() {
       >
         <HistoryState />
       </Tab>
-      <Tab
-        title="Memory"
-        eventKey="memory"
-        className="text-white text-right"
-        tabClassName="right-tab"
-      >
-        {/* TODO: put memory widget here */}
-        <h3>50</h3>
-      </Tab>
+      {/*<Tab*/}
+      {/*  title="Memory"*/}
+      {/*  eventKey="memory"*/}
+      {/*  className="text-white text-right"*/}
+      {/*  tabClassName="right-tab"*/}
+      {/*>*/}
+      {/*  /!* TODO: put memory widget here *!/*/}
+      {/*  <h3>50</h3>*/}
+      {/*</Tab>*/}
     </Tabs>
   )
 }

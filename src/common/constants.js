@@ -57,8 +57,8 @@ export const icons = {
   MEM_ADD: '&#xF757;',
   MEM_SUBTRACT: '&#xF758;',
   MEM_STORE: '&#xF756;',
-  TRASH: '&#xE81C;',
-  CLOCK: '&#xE74D;',
+  CLOCK: '&#xE81C;',
+  TRASH: '&#xE74D;',
 }
 
 export const htmlSymbols = {

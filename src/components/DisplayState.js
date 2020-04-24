@@ -3,7 +3,11 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import Display from './Display'
 import { format } from '../core/string-utils'
-import { htmlSymbols } from '../common/constants'
+import {
+  htmlSymbols,
+  MSG_DIVIDE_BY_ZERO,
+  MSG_INVALID_ARGUMENT,
+} from '../common/constants'
 import readable from '../core/tokenizer/readable'
 import { SET_DISPLAY_RESULT } from '../store/action-types'
 import { expressionFrom, resultFrom } from '../core/accumulator'
@@ -29,11 +33,11 @@ export default function DisplayState() {
 
       let payload = { result: res }
       if (!isFinite(res)) {
-        payload = { error: 'Cannot divide by zero', result: 0 }
+        payload = { error: MSG_DIVIDE_BY_ZERO, result: 0 }
       }
 
       if (isNaN(res)) {
-        payload = { error: 'Invalid argument', result: 0 }
+        payload = { error: MSG_INVALID_ARGUMENT, result: 0 }
       }
 
       dispatch({
@@ -41,7 +45,7 @@ export default function DisplayState() {
         payload: payload,
       })
     },
-    [stack, dispatch],
+    [stack],
   )
 
   const expression = String(expressionFrom(stack, readable)).replace(

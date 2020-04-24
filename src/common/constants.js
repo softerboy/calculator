@@ -35,6 +35,8 @@ export const buttons = {
 }
 
 export const MAX_DIGIT_COUNT = 16
+export const MSG_DIVIDE_BY_ZERO = 'Cannot divide by zero'
+export const MSG_INVALID_ARGUMENT = 'Invalid argument'
 
 export const icons = {
   PERCENT: '&#xE94C;',

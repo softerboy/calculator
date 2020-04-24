@@ -134,6 +134,17 @@ export default function KeyboardState() {
     // if user entered Remove button simply remove last entered
     // digit or floating point from display
     if (target === buttons.BTN_REMOVE) {
+      if (expressionCalculated) {
+        dispatch({ type: ACCUMULATOR_CLEAR })
+
+        return setImmediate(function () {
+          dispatch({
+            type: SET_DISPLAY_RESULT,
+            payload: { expression: '', result: currentResult },
+          })
+        })
+      }
+
       const resultCharArray = String(currentResult).split('')
       const payload = {}
       if (resultCharArray.length === 1) {

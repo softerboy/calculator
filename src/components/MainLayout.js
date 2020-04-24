@@ -19,7 +19,7 @@ export default function MainLayout() {
           <Col className="text-white text-right">
             <div className="d-flex justify-content-end">
               <Button
-                dangerouslySetInnerHTML={{ __html: icons.TRASH }}
+                dangerouslySetInnerHTML={{ __html: icons.CLOCK }}
                 className="rounded-0 p-3 memory-button d-md-none d-sm-block"
               />
             </div>

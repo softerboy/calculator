@@ -47,7 +47,7 @@ export default function HistoryState() {
       <Button
         className="trash-button"
         onClick={onHistoryClearButtonClick}
-        dangerouslySetInnerHTML={{ __html: icons.CLOCK }}
+        dangerouslySetInnerHTML={{ __html: icons.TRASH }}
       />
     </>
   )

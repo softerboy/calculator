@@ -12,7 +12,7 @@ export default function HistoryItem(props) {
           className="text-secondary"
           dangerouslySetInnerHTML={{ __html: expression }}
         />
-        <div className="text-white" style={{ fontSize: '1.5rem' }}>
+        <div className="text-white" style={{ fontSize: '1.3rem' }}>
           {result}
         </div>
       </div>

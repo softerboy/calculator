@@ -1,5 +1,6 @@
 import calc from './calc'
 import { buttons } from '../common/constants'
+import { movePrecision } from './string-utils'
 import mathcalcFormatter from './tokenizer/mathcalc'
 import sequentialFormatter from './tokenizer/sequential'
 import { formatOperation, isUnaryOperator } from './util'
@@ -239,8 +240,12 @@ function wb(expr) {
 }
 
 export function resultFrom(stack, scientific = false) {
-  if (scientific) return resultScientificFrom(stack)
-  return resultSequentialFrom(stack)
+  const arg = stack.map(function ({ operator, operand }) {
+    return { operator, operand: movePrecision(operand) }
+  })
+
+  if (scientific) return resultScientificFrom(arg)
+  return resultSequentialFrom(arg)
 }
 
 function seqFmt(operation, operand) {

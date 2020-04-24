@@ -4,13 +4,13 @@ import PropTypes from 'prop-types'
 export default function Display(props) {
   const { expression, result } = props
   return (
-    <div className="d-block text-right p-4" style={{ minHeight: 200 }}>
+    <div className="d-block text-right p-4">
       <span
-        className="text-secondary"
+        className="text-secondary d-block"
         style={{ fontSize: '0.9em' }}
         dangerouslySetInnerHTML={{ __html: expression }}
       />
-      <h1 style={{ fontSize: '5em' }}>{result}</h1>
+      <h1 style={{ fontSize: '6vw' }}>{result}</h1>
     </div>
   )
 }

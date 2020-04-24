@@ -9,14 +9,15 @@ import {
   isOperatorAction,
   isUnaryOperator,
 } from '../core/util'
-import {
-  ACCUMULATOR_CLEAR,
-  ACCUMULATOR_PUSH,
-  ACCUMULATOR_REPLACE_LAST,
-  SET_DISPLAY_RESULT,
-} from '../store/action-types'
 import Decimal from 'decimal.js-light'
 import { unformat } from '../core/string-utils'
+import {
+  stackClear,
+  stackPush,
+  stackReplaceLast,
+} from '../store/actions/accumulator'
+import { setDisplayResult } from '../store/actions/display'
+import { expressionFrom, resultFrom } from '../core/accumulator'
 
 export default function KeyboardState() {
   const dispatch = useDispatch()
@@ -38,11 +39,6 @@ export default function KeyboardState() {
   const currentResult = unformat(formattedResult)
 
   function onClick(target) {
-    if (equalButtonPressed) {
-      dispatch({ type: ACCUMULATOR_CLEAR })
-      setEqualButtonPressed(false)
-    }
-
     // without setImmediate clearing accumulator stack
     // execute after keyboard action handlers and display
     // shows zero which is incorrect. We need show user
@@ -55,6 +51,12 @@ export default function KeyboardState() {
   }
 
   function onNumberButtonClick(target) {
+    let newStack = stack
+    if (equalButtonPressed) {
+      newStack = dispatch(stackClear())
+      setEqualButtonPressed(false)
+    }
+
     // do nothing if current displayed
     // input length max than MAX_INPUT_LENGTH constant
     const maxInputReached = String(currentResult).length >= MAX_DIGIT_COUNT
@@ -68,56 +70,57 @@ export default function KeyboardState() {
     // display input is integer, simply add selected digit
     // to back of current number
     if (error || !hasFloatingPoint(currentResult)) {
-      let payload = {
-        result: new Decimal(currentResult).mul(10).add(target).toString(),
-      }
+      const expression = expressionFrom(newStack)
+
       if (expressionCalculated) {
-        payload = { result: target, error: '' }
         setExpressionCalculated(false)
+        return dispatch(setDisplayResult(expression, target))
       }
-      return dispatch({ type: SET_DISPLAY_RESULT, payload })
+
+      const result = new Decimal(currentResult).mul(10).add(target).toString()
+      return dispatch(setDisplayResult(expression, result))
     }
 
     // in case if user pressed digit button and current display
     // number is floating point, simply put entered digit to
     // back of current number
     if (error || hasFloatingPoint(currentResult)) {
-      let payload = { result: currentResult + '' + target }
+      const expression = expressionFrom(newStack)
+
       if (expressionCalculated && isLastOperationButtonPressed) {
-        payload = { result: target, error: '' }
         setExpressionCalculated(false)
+        return dispatch(setDisplayResult(expression, target))
       }
-      return dispatch({ type: SET_DISPLAY_RESULT, payload })
+
+      return dispatch(setDisplayResult(expression, currentResult + '' + target))
     }
   }
 
   function onHelperButtonClick(target) {
     if (target === buttons.BTN_SIGN && currentResult !== '0') {
+      const expression = expressionFrom(stack)
       // swap sign
-      const payload = {
-        result: new Decimal(currentResult).mul(-1).toString(),
-      }
-      return dispatch({ type: SET_DISPLAY_RESULT, payload })
+      const result = new Decimal(currentResult).mul(-1).toString()
+      return dispatch(setDisplayResult(expression, result))
     }
 
     // cancel last user entered input (number)
     // if CE (Cancel Entry) button pressed
     if (target === buttons.BTN_CANCEL_ENTRY) {
-      const payload = { result: '0', error: '' }
-      return dispatch({ type: SET_DISPLAY_RESULT, payload })
+      const expression = expressionFrom(stack)
+      return dispatch(setDisplayResult(expression, '0'))
     }
 
     // clear display and stack if C (Clear) button pressed
     if (target === buttons.BTN_CLEAR) {
-      dispatch({ type: ACCUMULATOR_CLEAR })
-      const payload = { result: '0', error: '' }
-      return dispatch({ type: SET_DISPLAY_RESULT, payload })
+      dispatch(stackClear())
+      return dispatch(setDisplayResult('', '0'))
     }
 
     if (target === buttons.BTN_FLOATING_POINT && expressionCalculated) {
-      let payload = { result: '0.' }
       setExpressionCalculated(false)
-      return dispatch({ type: SET_DISPLAY_RESULT, payload })
+      const expression = expressionFrom(stack)
+      return dispatch(setDisplayResult(expression, '0.'))
     }
 
     // in case of pressing floating point button, check is current
@@ -126,35 +129,33 @@ export default function KeyboardState() {
     // current display input
     const inputNotContainsPoint = String(currentResult).indexOf('.') < 0
     if (target === buttons.BTN_FLOATING_POINT && inputNotContainsPoint) {
-      let payload = { result: currentResult + '.' }
-      return dispatch({ type: SET_DISPLAY_RESULT, payload })
+      const result = currentResult + '.'
+      const expression = expressionFrom(stack)
+      return dispatch(setDisplayResult(expression, result))
     }
 
     // if user entered Remove button simply remove last entered
     // digit or floating point from display
     if (target === buttons.BTN_REMOVE) {
-      if (expressionCalculated) {
-        dispatch({ type: ACCUMULATOR_CLEAR })
+      if (isLastOperationButtonPressed) return
 
-        return setImmediate(function () {
-          dispatch({
-            type: SET_DISPLAY_RESULT,
-            payload: { expression: '', result: currentResult },
-          })
-        })
+      if (expressionCalculated) {
+        dispatch(stackClear())
+        return dispatch(setDisplayResult('', currentResult))
       }
 
       const resultCharArray = String(currentResult).split('')
-      const payload = {}
+      const expression = expressionFrom(stack)
       if (resultCharArray.length === 1) {
-        payload.result = '0'
-      } else if (resultCharArray.length === 2 && resultCharArray[0] === '-') {
-        // case minus (-) with one number
-        payload.result = '0'
-      } else {
-        payload.result = resultCharArray.slice(0, -1).join('')
+        return dispatch(setDisplayResult(expression, '0'))
       }
-      return dispatch({ type: SET_DISPLAY_RESULT, payload })
+
+      if (resultCharArray.length === 2 && resultCharArray[0] === '-') {
+        return dispatch(setDisplayResult(expression, '0'))
+      }
+
+      const result = resultCharArray.slice(0, -1).join('')
+      return dispatch(setDisplayResult(expression, result))
     }
   }
 
@@ -167,15 +168,12 @@ export default function KeyboardState() {
       setIsLastOperationButtonPressed(true)
 
       if (stack.length) {
-        const lastItem = stack[stack.length - 1]
+        const { operand } = stack[stack.length - 1]
 
-        return dispatch({
-          type: ACCUMULATOR_REPLACE_LAST,
-          payload: {
-            operand: lastItem.operand,
-            operator: target,
-          },
-        })
+        const newStack = dispatch(stackReplaceLast(target, operand))
+        const expression = expressionFrom(newStack)
+        const result = resultFrom(newStack)
+        return dispatch(setDisplayResult(expression, result))
       }
     }
 
@@ -183,13 +181,10 @@ export default function KeyboardState() {
     if (!isUnaryOperator(target)) setIsLastOperationButtonPressed(true)
 
     // push last user action action into accumulator
-    dispatch({
-      type: ACCUMULATOR_PUSH,
-      payload: {
-        operand: currentResult,
-        operator: target,
-      },
-    })
+    const newStack = dispatch(stackPush(target, currentResult))
+    const expression = expressionFrom(newStack)
+    const result = resultFrom(newStack)
+    return dispatch(setDisplayResult(expression, result))
   }
 
   return <Keyboard onClick={onClick} />

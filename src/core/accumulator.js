@@ -1,4 +1,5 @@
 import calc from './calc'
+import readable from './tokenizer/readable'
 import { buttons } from '../common/constants'
 import { movePrecision } from './string-utils'
 import mathcalcFormatter from './tokenizer/mathcalc'
@@ -6,7 +7,7 @@ import sequentialFormatter from './tokenizer/sequential'
 import { formatOperation, isUnaryOperator } from './util'
 
 // generates expression string from user entered operations
-export function expressionFrom(stack, formatter) {
+export function expressionFrom(stack, formatter = readable) {
   if (stack.length === 0) return ''
   const { operator, operand } = stack[0]
 

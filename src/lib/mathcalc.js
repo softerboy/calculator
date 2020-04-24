@@ -272,12 +272,10 @@ var MathCalc = (function (module) {
       switch (op.id) {
         case 'Plus':
           return function () {
-            console.log('Called')
             return right.apply(this, arguments)
           }
         case 'Minus':
           return function () {
-            console.log('Called')
             return -right.apply(this, arguments)
           }
       }

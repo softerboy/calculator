@@ -1,57 +1,16 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 
 import Display from './Display'
 import { format } from '../core/string-utils'
-import {
-  htmlSymbols,
-  MSG_DIVIDE_BY_ZERO,
-  MSG_INVALID_ARGUMENT,
-} from '../common/constants'
-import readable from '../core/tokenizer/readable'
-import { SET_DISPLAY_RESULT } from '../store/action-types'
-import { expressionFrom, resultFrom } from '../core/accumulator'
+import { htmlSymbols } from '../common/constants'
 
 export default function DisplayState() {
-  const dispatch = useDispatch()
-
-  const { result, error } = useSelector(function (state) {
+  const { result, error, expression } = useSelector(function (state) {
     return state.display
   })
 
-  const stack = useSelector(function (state) {
-    return state.accumulator
-  })
-
-  // whenever accumulator stack changes,
-  // calculate new result from stack and display it,
-  // otherwise display current user entered number
-  // Note: second case managed by KeyboardState component
-  useEffect(
-    function () {
-      const res = resultFrom(stack)
-
-      let payload = { result: res }
-      if (!isFinite(res)) {
-        payload = { error: MSG_DIVIDE_BY_ZERO, result: 0 }
-      }
-
-      if (isNaN(res)) {
-        payload = { error: MSG_INVALID_ARGUMENT, result: 0 }
-      }
-
-      dispatch({
-        type: SET_DISPLAY_RESULT,
-        payload: payload,
-      })
-    },
-    [stack],
-  )
-
-  const expression = String(expressionFrom(stack, readable)).replace(
-    /-/g,
-    htmlSymbols.MINUS,
-  )
+  const expr = String(expression).replace(/-/g, htmlSymbols.MINUS)
 
   let displayResult = result
   if (typeof result === 'object') {
@@ -59,5 +18,5 @@ export default function DisplayState() {
   }
 
   const formatted = format(String(displayResult))
-  return <Display result={error || formatted} expression={expression} />
+  return <Display result={error || formatted} expression={expr} />
 }

@@ -7,10 +7,10 @@ export default function Display(props) {
     <div className="d-block text-right p-4">
       <span
         className="text-secondary d-block"
-        style={{ fontSize: '0.9em' }}
+        style={{ fontSize: '0.9em', minHeight: 30 }}
         dangerouslySetInnerHTML={{ __html: expression }}
       />
-      <h1 style={{ fontSize: '6vw' }}>{result}</h1>
+      <h1 style={{ fontSize: '6vw', lineHeight: '6vw' }}>{result}</h1>
     </div>
   )
 }

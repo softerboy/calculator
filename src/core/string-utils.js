@@ -24,15 +24,23 @@ export function unformat(input) {
   return String(input).replace(/,/g, '')
 }
 
+/**
+ * Removes scientific number floating point without changing it's value
+ * For example 1.23456e+12 becomes 123456e+7
+ * @param input
+ * @returns {string}
+ */
 export function movePrecision(input) {
-  if (!(input.indexOf('.') > -1 && input.indexOf('e') > -1)) {
-    return input
+  let str = typeof input === 'string' ? input : '' + input
+
+  if (!(str.indexOf('.') > -1 && str.indexOf('e') > -1)) {
+    return str
   }
 
-  const pointIndex = input.indexOf('.')
-  const indexOfE = input.indexOf('e')
-  const { length } = input.substring(pointIndex + 1, indexOfE)
-  const base = input.substring(0, indexOfE + 2)
-  const mantissa = input.substring(indexOfE + 1)
+  const pointIndex = str.indexOf('.')
+  const indexOfE = str.indexOf('e')
+  const { length } = str.substring(pointIndex + 1, indexOfE)
+  const base = str.substring(0, indexOfE + 2)
+  const mantissa = str.substring(indexOfE + 1)
   return base.replace('.', '') + Math.abs(Number(mantissa) - Number(length))
 }

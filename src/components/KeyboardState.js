@@ -13,6 +13,7 @@ import {
   stackPush,
   stackReplaceLast,
 } from '../store/actions/accumulator'
+import { historyPush } from '../store/actions/history'
 import { expressionFrom, resultFrom } from '../core/accumulator'
 
 const {
@@ -165,6 +166,7 @@ export default function KeyboardState() {
       const newResult = resultFrom(newStack)
       const newExpression = expressionFrom(newStack)
       dispatch(setDisplayResult(newExpression, newResult))
+      dispatch(historyPush(newExpression, newResult))
       return dispatch(stackClear())
     }
 

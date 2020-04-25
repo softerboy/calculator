@@ -1,5 +1,6 @@
 import {
   ACCUMULATOR_CLEAR,
+  ACCUMULATOR_POP,
   ACCUMULATOR_PUSH,
   ACCUMULATOR_REPLACE_LAST,
 } from '../action-types'
@@ -29,6 +30,13 @@ export function stackReplaceLast(operator, operand) {
       type: ACCUMULATOR_REPLACE_LAST,
     })
 
+    return getState().accumulator
+  }
+}
+
+export function stackPop() {
+  return function (dispatch, getState) {
+    dispatch({ type: ACCUMULATOR_POP })
     return getState().accumulator
   }
 }

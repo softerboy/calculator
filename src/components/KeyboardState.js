@@ -1,34 +1,43 @@
+import Decimal from 'decimal.js-light'
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
 import Keyboard from './Keyboard'
-import { buttons, MAX_DIGIT_COUNT } from '../common/constants'
-import {
-  hasFloatingPoint,
-  isNumberAction,
-  isOperatorAction,
-  isUnaryOperator,
-} from '../core/util'
-import Decimal from 'decimal.js-light'
 import { unformat } from '../core/string-utils'
+import { buttons, MAX_DIGIT_COUNT } from '../common/constants'
+import { useDispatch, useSelector } from 'react-redux'
+import { setDisplayResult } from '../store/actions/display'
+import { hasFloatingPoint, isNumberAction, isUnaryOperator } from '../core/util'
 import {
   stackClear,
+  stackPop,
   stackPush,
   stackReplaceLast,
 } from '../store/actions/accumulator'
-import { setDisplayResult } from '../store/actions/display'
 import { expressionFrom, resultFrom } from '../core/accumulator'
+
+const {
+  BTN_SIGN,
+  BTN_CLEAR,
+  BTN_REMOVE,
+  BTN_SUBTRACT,
+  BTN_ADD,
+  BTN_EQUAL,
+  BTN_DIVIDE,
+  BTN_MULTIPLY,
+  BTN_ONE_DIVIDE_BY,
+  BTN_SQUARE_ROOT,
+  BTN_SQUARE,
+  BTN_PERCENT,
+  BTN_FLOATING_POINT,
+  BTN_CANCEL_ENTRY,
+} = buttons
 
 export default function KeyboardState() {
   const dispatch = useDispatch()
-  const [equalButtonPressed, setEqualButtonPressed] = useState(false)
-  const [expressionCalculated, setExpressionCalculated] = useState(false)
-  const [
-    isLastOperationButtonPressed,
-    setIsLastOperationButtonPressed,
-  ] = useState(false)
+  const [newInputFlag, setNewInputFlag] = useState(true)
+  const [resultCalculated, setResultCalculated] = useState(true)
 
-  const { result: formattedResult, error } = useSelector(function (state) {
+  const display = useSelector(function (state) {
     return state.display
   })
 
@@ -36,155 +45,143 @@ export default function KeyboardState() {
     return state.accumulator
   })
 
-  const currentResult = unformat(formattedResult)
+  const currentResult = unformat(display.result)
 
-  function onClick(target) {
-    // without setImmediate clearing accumulator stack
-    // execute after keyboard action handlers and display
-    // shows zero which is incorrect. We need show user
-    // entered number after calculation (i.e. after equal button click)
-    return setImmediate(function () {
-      if (isNumberAction(target)) return onNumberButtonClick(target)
-      if (isOperatorAction(target)) return onOperatorButtonClick(target)
-      return onHelperButtonClick(target)
-    })
+  function onClick(button) {
+    // whenever user clicks buttons below
+    // he would be began from fresh display input
+    const newInputButtons = [
+      BTN_ADD,
+      BTN_CLEAR,
+      BTN_EQUAL,
+      BTN_DIVIDE,
+      BTN_SQUARE,
+      BTN_PERCENT,
+      BTN_SUBTRACT,
+      BTN_MULTIPLY,
+      BTN_SQUARE_ROOT,
+      BTN_CANCEL_ENTRY,
+      BTN_ONE_DIVIDE_BY,
+    ]
+
+    setNewInputFlag(newInputButtons.includes(button))
+
+    const resultCalculatedButtons = [
+      BTN_EQUAL,
+      BTN_SQUARE,
+      BTN_SQUARE_ROOT,
+      BTN_ONE_DIVIDE_BY,
+    ]
+
+    setResultCalculated(resultCalculatedButtons.includes(button))
+
+    if (isNumberAction(button)) return onNumberAction(button)
+    return onOperatorAction(button)
   }
 
-  function onNumberButtonClick(target) {
-    let newStack = stack
-    if (equalButtonPressed) {
-      newStack = dispatch(stackClear())
-      setEqualButtonPressed(false)
-    }
+  function onNumberAction(button) {
+    // do nothing if current input length longer
+    // than MAX_DIGIT_COUNT constant
+    if (currentResult.length > MAX_DIGIT_COUNT && !newInputFlag) return
 
-    // do nothing if current displayed
-    // input length max than MAX_INPUT_LENGTH constant
-    const maxInputReached = String(currentResult).length >= MAX_DIGIT_COUNT
-    if (maxInputReached && !expressionCalculated) return
+    // some of sqrt, 1/x, %, x^2, = buttons pressed before
+    if (resultCalculated && stack.length > 1) {
+      const { operator } = stack[stack.length - 1]
 
-    if (error) setEqualButtonPressed(true)
-
-    setIsLastOperationButtonPressed(false)
-
-    // in case of user pressed digit button and current
-    // display input is integer, simply add selected digit
-    // to back of current number
-    if (error || !hasFloatingPoint(currentResult)) {
-      const expression = expressionFrom(newStack)
-
-      if (expressionCalculated) {
-        setExpressionCalculated(false)
-        return dispatch(setDisplayResult(expression, target))
+      if (isUnaryOperator(operator)) {
+        const newStack = dispatch(stackPop())
+        const newExpression = expressionFrom(newStack)
+        return dispatch(setDisplayResult(newExpression, button))
       }
-
-      const result = new Decimal(currentResult).mul(10).add(target).toString()
-      return dispatch(setDisplayResult(expression, result))
     }
 
-    // in case if user pressed digit button and current display
-    // number is floating point, simply put entered digit to
-    // back of current number
-    if (error || hasFloatingPoint(currentResult)) {
-      const expression = expressionFrom(newStack)
-
-      if (expressionCalculated && isLastOperationButtonPressed) {
-        setExpressionCalculated(false)
-        return dispatch(setDisplayResult(expression, target))
+    if (newInputFlag) {
+      setNewInputFlag(false)
+      if (resultCalculated) {
+        dispatch(stackClear())
+        return dispatch(setDisplayResult('', button))
       }
-
-      return dispatch(setDisplayResult(expression, currentResult + '' + target))
+      return dispatch(setDisplayResult(display.expression, button))
     }
+
+    let newInput = currentResult + button
+    if (!hasFloatingPoint(currentResult)) {
+      newInput = new Decimal(currentResult).mul(10).add(button).toString()
+    }
+
+    return dispatch(setDisplayResult(display.expression, newInput))
   }
 
-  function onHelperButtonClick(target) {
-    if (target === buttons.BTN_SIGN && currentResult !== '0') {
-      const expression = expressionFrom(stack)
-      // swap sign
-      const result = new Decimal(currentResult).mul(-1).toString()
-      return dispatch(setDisplayResult(expression, result))
+  function onOperatorAction(button) {
+    if (button === BTN_FLOATING_POINT) {
+      if (resultCalculated) {
+        dispatch(stackClear())
+        const newInput = newInputFlag ? '0.' : currentResult
+        return dispatch(setDisplayResult('', newInput))
+      }
+
+      // don't allow user to input floating point sign adding twice
+      if (hasFloatingPoint(currentResult)) {
+        const newInput = newInputFlag ? '0.' : currentResult
+        return dispatch(setDisplayResult(display.expression, newInput))
+      }
+
+      // otherwise add '.'
+      const newInput = currentResult + '.'
+      return dispatch(setDisplayResult(display.expression, newInput))
     }
 
-    // cancel last user entered input (number)
-    // if CE (Cancel Entry) button pressed
-    if (target === buttons.BTN_CANCEL_ENTRY) {
-      const expression = expressionFrom(stack)
-      return dispatch(setDisplayResult(expression, '0'))
+    if (button === BTN_SIGN) {
+      const newInput = new Decimal(currentResult).mul(-1).toString()
+      return dispatch(setDisplayResult(display.expression, newInput))
     }
 
-    // clear display and stack if C (Clear) button pressed
-    if (target === buttons.BTN_CLEAR) {
+    if (button === BTN_CANCEL_ENTRY) {
+      return dispatch(setDisplayResult(display.expression, '0'))
+    }
+
+    if (button === BTN_REMOVE) {
+      // if the last pressed button before this action was calculating result,
+      // remove accumulator stack
+      if (resultCalculated) {
+        dispatch(stackClear())
+        return dispatch(setDisplayResult('', '0'))
+      }
+
+      // remove last digit
+      const newInput = currentResult.split('').slice(0, -1).join('')
+      return dispatch(setDisplayResult(display.expression, newInput || '0'))
+    }
+
+    if (button === BTN_CLEAR) {
       dispatch(stackClear())
       return dispatch(setDisplayResult('', '0'))
     }
 
-    if (target === buttons.BTN_FLOATING_POINT && expressionCalculated) {
-      setExpressionCalculated(false)
-      const expression = expressionFrom(stack)
-      return dispatch(setDisplayResult(expression, '0.'))
+    if (button === BTN_EQUAL) {
+      // show calculated result and expression
+      // and clear/reset accumulator stack
+      const newStack = dispatch(stackPush(button, currentResult))
+      const newResult = resultFrom(newStack)
+      const newExpression = expressionFrom(newStack)
+      dispatch(setDisplayResult(newExpression, newResult))
+      return dispatch(stackClear())
     }
 
-    // in case of pressing floating point button, check is current
-    // display input integer or floating point number already
-    // We no need to add floating point twice if already exist in
-    // current display input
-    const inputNotContainsPoint = String(currentResult).indexOf('.') < 0
-    if (target === buttons.BTN_FLOATING_POINT && inputNotContainsPoint) {
-      const result = currentResult + '.'
-      const expression = expressionFrom(stack)
-      return dispatch(setDisplayResult(expression, result))
-    }
-
-    // if user entered Remove button simply remove last entered
-    // digit or floating point from display
-    if (target === buttons.BTN_REMOVE) {
-      if (isLastOperationButtonPressed) return
-
-      if (expressionCalculated) {
-        dispatch(stackClear())
-        return dispatch(setDisplayResult('', currentResult))
-      }
-
-      const resultCharArray = String(currentResult).split('')
-      const expression = expressionFrom(stack)
-      if (resultCharArray.length === 1) {
-        return dispatch(setDisplayResult(expression, '0'))
-      }
-
-      if (resultCharArray.length === 2 && resultCharArray[0] === '-') {
-        return dispatch(setDisplayResult(expression, '0'))
-      }
-
-      const result = resultCharArray.slice(0, -1).join('')
-      return dispatch(setDisplayResult(expression, result))
-    }
-  }
-
-  function onOperatorButtonClick(target) {
-    if (target === buttons.BTN_EQUAL) {
-      setEqualButtonPressed(true)
-    }
-
-    if (isLastOperationButtonPressed && !isUnaryOperator(target)) {
-      setIsLastOperationButtonPressed(true)
-
-      if (stack.length) {
-        const { operand } = stack[stack.length - 1]
-
-        const newStack = dispatch(stackReplaceLast(target, operand))
-        const expression = expressionFrom(newStack)
-        const result = resultFrom(newStack)
-        return dispatch(setDisplayResult(expression, result))
+    if (!isUnaryOperator(button) && newInputFlag) {
+      const operator = button
+      const { operand, operator: oldOperator } = stack[stack.length - 1]
+      if (!isUnaryOperator(oldOperator)) {
+        const newStack = dispatch(stackReplaceLast(operator, operand))
+        const newExpression = expressionFrom(newStack)
+        return dispatch(setDisplayResult(newExpression, display.result))
       }
     }
 
-    setExpressionCalculated(true)
-    if (!isUnaryOperator(target)) setIsLastOperationButtonPressed(true)
-
-    // push last user action action into accumulator
-    const newStack = dispatch(stackPush(target, currentResult))
-    const expression = expressionFrom(newStack)
-    const result = resultFrom(newStack)
-    return dispatch(setDisplayResult(expression, result))
+    const newStack = dispatch(stackPush(button, currentResult))
+    const newResult = resultFrom(newStack)
+    const newExpression = expressionFrom(newStack)
+    return dispatch(setDisplayResult(newExpression, newResult))
   }
 
   return <Keyboard onClick={onClick} />

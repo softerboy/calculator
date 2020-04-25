@@ -1,5 +1,8 @@
 export function format(input) {
-  const [integer] = input.split('.')
+  let [integer] = input.split('.')
+  const hasSign = integer[0] === '-'
+
+  if (hasSign) integer = integer.substr(1)
 
   const formatted = reverse(
     reverse(integer)
@@ -9,7 +12,8 @@ export function format(input) {
 
   const index = input.indexOf('.')
   const floating = index > -1 ? input.substr(index) : ''
-  return floating ? formatted + floating : formatted
+  const result = floating ? formatted + floating : formatted
+  return hasSign ? '-' + result : result
 }
 
 function reverse(str) {

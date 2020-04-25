@@ -1,13 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Button from 'react-bootstrap/Button'
 
 import History from './History'
-import readable from '../core/tokenizer/readable'
-import { buttons, icons } from '../common/constants'
-import { historyClear, historyPush } from '../store/actions/history'
-import { expressionFrom, resultFrom } from '../core/accumulator'
+import { icons } from '../common/constants'
+import { historyClear } from '../store/actions/history'
 
 export default function HistoryState() {
   const dispatch = useDispatch()
@@ -15,26 +13,6 @@ export default function HistoryState() {
   const history = useSelector(function (state) {
     return state.history
   })
-
-  const stack = useSelector(function (state) {
-    return state.accumulator
-  })
-
-  useEffect(
-    function () {
-      const { length } = stack
-      if (!length) return
-
-      const last = stack[length - 1]
-      if (last.operator === buttons.BTN_EQUAL) {
-        const result = resultFrom(stack)
-        const expression = expressionFrom(stack, readable)
-
-        dispatch(historyPush({ expression, result }))
-      }
-    },
-    [stack],
-  )
 
   function onHistoryClearButtonClick() {
     return dispatch(historyClear())

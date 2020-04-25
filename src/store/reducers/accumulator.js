@@ -1,13 +1,11 @@
 import {
   ACCUMULATOR_CLEAR,
+  ACCUMULATOR_POP,
   ACCUMULATOR_PUSH,
   ACCUMULATOR_REPLACE_LAST,
 } from '../action-types'
 
-// on begin we have an empty accumulator stack
-const initialState = []
-
-export default function accumulator(state = initialState, action) {
+export default function accumulator(state = [], action) {
   const { type } = action
 
   if (type === ACCUMULATOR_PUSH) {
@@ -20,6 +18,10 @@ export default function accumulator(state = initialState, action) {
 
   if (type === ACCUMULATOR_CLEAR) {
     return []
+  }
+
+  if (type === ACCUMULATOR_POP) {
+    return state.slice(0, -1)
   }
 
   return state

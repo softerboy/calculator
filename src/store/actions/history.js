@@ -5,8 +5,8 @@ import {
   HISTORY_PUSH,
 } from '../action-types'
 
-export function historyPush(item) {
-  return { payload: item, type: HISTORY_PUSH }
+export function historyPush(expression, result) {
+  return { payload: { expression, result }, type: HISTORY_PUSH }
 }
 
 export function historyClear() {

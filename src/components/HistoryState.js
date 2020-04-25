@@ -1,16 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Button from 'react-bootstrap/Button'
 
 import History from './History'
 import { icons } from '../common/constants'
-import { historyClear } from '../store/actions/history'
+import { fetchHistory, historyClear } from '../store/actions/history'
 
 export default function HistoryState() {
   const dispatch = useDispatch()
 
-  const history = useSelector(function (state) {
+  const { list, error, fetching } = useSelector(function (state) {
     return state.history
   })
 
@@ -18,9 +18,31 @@ export default function HistoryState() {
     return dispatch(historyClear())
   }
 
+  useEffect(function () {
+    dispatch(fetchHistory())
+  }, [])
+
+  function loadHistory() {
+    dispatch(fetchHistory())
+  }
+
+  if (fetching) {
+    return <div className="text-left p-3">Loading history...</div>
+  }
+
+  if (error) {
+    return (
+      <div className="p-4">
+        <Button block onClick={loadHistory}>
+          Try again
+        </Button>
+      </div>
+    )
+  }
+
   return (
     <>
-      <History history={history.list} />
+      <History history={list} />
 
       <Button
         className="trash-button"

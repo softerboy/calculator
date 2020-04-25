@@ -8,6 +8,9 @@ import * as serviceWorker from './serviceWorker'
 
 import 'bootstrap/scss/bootstrap.scss'
 import './index.css'
+// this line register api endpoints with mocks,
+// comment it when you want to fetch data from real api endpoints
+import './mocks/axios'
 
 ReactDOM.render(
   <Provider store={store}>

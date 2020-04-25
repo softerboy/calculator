@@ -84,14 +84,14 @@ body,
 }
 
 .equal-button {
-  background-color: #6B4718;
+  background-color: #6b4718;
 }
 .equal-button:hover {
-  background-color: #C46F03;
+  background-color: #c46f03;
 }
 
 .equal-button:focus {
-  background-color: #C46F03;
+  background-color: #c46f03;
 }
 
 .trash-button {
@@ -131,4 +131,17 @@ body,
 /* width */
 ::-webkit-scrollbar {
   display: none;
+}
+
+.mobile-history {
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  background-color: #151718;
+  min-height: 100%;
+
+  transition: top 0.1s ease-out;
+  -moz-transition: top 0.1s ease-out;
+  -o-transition: top 0.1s ease-out;
+  -webkit-transition: top 0.1s ease-out;
 }

@@ -1,33 +1,47 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Button from 'react-bootstrap/Button'
 
 import RightTabs from './RightTabs'
+import HistoryState from './HistoryState'
 import DisplayState from './DisplayState'
 import MemoryToolbar from './MemoryToolbar'
 import KeyboardState from './KeyboardState'
-import { icons } from '../common/constants'
+import HistoryToggleButton from './HistoryToggleButton'
+import { hideMobileHistoryPanel } from '../store/actions/ui'
 
 export default function MainLayout() {
+  const dispatch = useDispatch()
+
+  const { mobileHistoryPanelShown } = useSelector(function (state) {
+    return state.ui
+  })
+
+  const style = mobileHistoryPanelShown ? { top: 0 } : { top: '100%' }
+
+  function onDisplayClick() {
+    if (mobileHistoryPanelShown) dispatch(hideMobileHistoryPanel())
+  }
+
   return (
     <Row className="flex-grow-1" noGutters>
       {/*left col with result display text and buttons*/}
       <Col md={9} className="d-flex flex-column">
-        <Row noGutters>
+        <Row noGutters onClick={onDisplayClick}>
           <Col className="text-white text-right">
             <div className="d-flex justify-content-end">
-              <Button
-                dangerouslySetInnerHTML={{ __html: icons.CLOCK }}
-                className="rounded-0 p-3 memory-button d-md-none d-sm-block"
-              />
+              <HistoryToggleButton />
             </div>
             <DisplayState />
             <MemoryToolbar />
           </Col>
         </Row>
-        <Row className="flex-grow-1" noGutters>
+        <Row className="flex-grow-1 flex-column position-relative" noGutters>
+          <Col className="mobile-history" style={style}>
+            <HistoryState />
+          </Col>
           <Col className="d-flex flex-column flex-grow-1">
             <KeyboardState />
           </Col>

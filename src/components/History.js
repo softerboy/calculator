@@ -4,12 +4,15 @@ import PropTypes from 'prop-types'
 import ListGroup from 'react-bootstrap/ListGroup'
 
 import HistoryItem from './HistoryItem'
+import { MSG_EMPTY_HISTORY } from '../common/constants'
 
 export default function History(props) {
   const { history, emptyWarn } = props
 
   if (!history || !Array.isArray(history) || !history.length) {
-    return <div className="text-left pl-2 pt-3 pr-2">{emptyWarn}</div>
+    return (
+      <div className="text-left pl-2 pt-3 pr-2 text-white-50">{emptyWarn}</div>
+    )
   }
 
   function renderHistory(history) {
@@ -36,5 +39,5 @@ History.propTypes = {
 History.defaultProps = {
   history: [],
   // eslint-disable-next-line quotes
-  emptyWarn: "There's no history yet",
+  emptyWarn: MSG_EMPTY_HISTORY,
 }

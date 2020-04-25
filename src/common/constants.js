@@ -37,6 +37,8 @@ export const buttons = {
 export const MAX_DIGIT_COUNT = 16
 export const MSG_DIVIDE_BY_ZERO = 'Cannot divide by zero'
 export const MSG_INVALID_ARGUMENT = 'Invalid argument'
+// eslint-disable-next-line quotes
+export const MSG_EMPTY_HISTORY = "There's no history yet"
 
 export const icons = {
   PERCENT: '&#xE94C;',

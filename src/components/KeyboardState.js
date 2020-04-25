@@ -83,7 +83,7 @@ export default function KeyboardState() {
   function onNumberAction(button) {
     // do nothing if current input length longer
     // than MAX_DIGIT_COUNT constant
-    if (currentResult.length > MAX_DIGIT_COUNT && !newInputFlag) return
+    if (currentResult.length >= MAX_DIGIT_COUNT && !newInputFlag) return
 
     // some of sqrt, 1/x, %, x^2, = buttons pressed before
     if (resultCalculated && stack.length > 1) {

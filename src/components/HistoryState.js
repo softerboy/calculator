@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Button from 'react-bootstrap/Button'
 
 import History from './History'
-import { icons } from '../common/constants'
+import { icons, MSG_HISTORY_LOADING } from '../common/constants'
 import { fetchHistory, historyClear } from '../store/actions/history'
 
 export default function HistoryState() {
@@ -19,7 +19,7 @@ export default function HistoryState() {
   }
 
   useEffect(function () {
-    dispatch(fetchHistory())
+    loadHistory()
   }, [])
 
   function loadHistory() {
@@ -27,13 +27,18 @@ export default function HistoryState() {
   }
 
   if (fetching) {
-    return <div className="text-left p-3">Loading history...</div>
+    return <div className="text-left p-3">{MSG_HISTORY_LOADING}</div>
   }
 
   if (error) {
     return (
       <div className="p-4">
-        <Button block onClick={loadHistory}>
+        <p className="text-danger text-left">{error}</p>
+        <Button
+          block
+          onClick={loadHistory}
+          className="text-center rounded-0 operation-button border-0"
+        >
           Try again
         </Button>
       </div>

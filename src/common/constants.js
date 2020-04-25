@@ -40,6 +40,7 @@ export const MSG_INVALID_ARGUMENT = 'Invalid argument'
 // eslint-disable-next-line quotes
 export const MSG_EMPTY_HISTORY = "There's no history yet"
 export const MSG_ERROR_HISTORY_FETCH = 'An error occurred during fetch history'
+export const MSG_HISTORY_LOADING = 'Loading history...'
 
 export const icons = {
   PERCENT: '&#xE94C;',

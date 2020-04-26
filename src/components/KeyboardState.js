@@ -180,7 +180,7 @@ export default function KeyboardState() {
       return dispatch(stackClear())
     }
 
-    if (!isUnaryOperator(button) && newInputFlag) {
+    if (!isUnaryOperator(button) && newInputFlag && stack.length) {
       const operator = button
       const { operand, operator: oldOperator } = stack[stack.length - 1]
       if (!isUnaryOperator(oldOperator)) {

@@ -7,7 +7,7 @@ import store from './store'
 import * as serviceWorker from './serviceWorker'
 
 import 'bootstrap/scss/bootstrap.scss'
-import './index.css'
+import './index.scss'
 // this line register api endpoints with mocks,
 // comment it when you want to fetch data from real api endpoints
 import './mocks/axios'

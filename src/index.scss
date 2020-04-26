@@ -136,12 +136,38 @@ body,
 .mobile-history {
   position: absolute;
   right: 0;
+  top: 0;
   z-index: 1;
   background-color: #151718;
   min-height: 100%;
+}
 
-  transition: top 0.1s ease-out;
-  -moz-transition: top 0.1s ease-out;
-  -o-transition: top 0.1s ease-out;
-  -webkit-transition: top 0.1s ease-out;
+.mobile-history-in {
+  animation: mobile-history-panel-in .2s;
+  animation-fill-mode: forwards;
+}
+
+.mobile-history-out {
+  animation: mobile-history-panel-out .2s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes mobile-history-panel-in {
+  0% {
+    opacity: 0;
+    z-index: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes mobile-history-panel-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    z-index: -1;
+  }
 }

@@ -19,7 +19,12 @@ export default function MainLayout() {
     return state.ui
   })
 
-  const style = mobileHistoryPanelShown ? { top: 0 } : { top: '100%' }
+  const classNames = ['mobile-history', 'd-block', 'd-md-none']
+  if (mobileHistoryPanelShown) {
+    classNames.push('mobile-history-in')
+  } else {
+    classNames.push('mobile-history-out')
+  }
 
   function onDisplayClick() {
     if (mobileHistoryPanelShown) dispatch(hideMobileHistoryPanel())
@@ -39,7 +44,7 @@ export default function MainLayout() {
           </Col>
         </Row>
         <Row className="flex-grow-1 flex-column position-relative" noGutters>
-          <Col className="mobile-history" style={style}>
+          <Col className={classNames.join(' ')}>
             <HistoryState />
           </Col>
           <Col className="d-flex flex-column flex-grow-1">

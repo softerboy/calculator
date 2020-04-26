@@ -201,6 +201,7 @@ export default function KeyboardState() {
       const postData = {
         calculation: newExpression,
         result: newResult,
+        date: new Date().toISOString(),
       }
       dispatch(postCalculation(postData))
 

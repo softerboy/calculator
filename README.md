@@ -1,6 +1,17 @@
 ## Windows 10 Based Calculator App
 A fully featured calculator made using [React](https://reactjs.org/) with :coffee: and :heart: by [softerboy](https://github.com/softerboy)
 
+<table>
+  <tr>
+    <td width="26%">
+      <img src="src/assets/images/screenshots/calculator_mobile.png" width="100%">
+    </td>
+    <td width="60%">
+      <img src="src/assets/images/screenshots/calculator_desktop.png">
+    </td>
+  </tr>
+</table>
+
 ## Features:
 * Responsive UI
 * Keyboard input on Laptops (see section Keyboard for available key bindings)

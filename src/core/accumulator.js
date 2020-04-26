@@ -163,7 +163,7 @@ export function expressionSequentialFrom(stack) {
 
   let initial = stack[0].operand
   if (isUnaryOperator(stack[0].operator)) {
-    initial = calc(seqFmt(stack[0].operator, stack[0].operand))
+    initial = seqFmt(stack[0].operator, stack[0].operand)
   }
 
   return stack.reduce(function (acc, curr, index) {
@@ -197,8 +197,7 @@ export function expressionSequentialFrom(stack) {
         acc + seqFmt(first.operator, seqFmt(second.operator, second.operand)),
       )
     } else if (isFirstUnary && !isSecondUnary) {
-      // return wb(acc + seqFmt(second.operator, second.operand))
-      return wb(calc(expressionSequentialFrom(stack.slice(0, -1))))
+      return wb(expressionSequentialFrom(stack.slice(0, -1)))
     }
 
     if (second.operator === buttons.BTN_EQUAL) {
@@ -220,18 +219,18 @@ export function expressionSequentialFrom(stack) {
     // for each and last simply concatenate them (divide and conquer principle)
     if (index2 > -1) {
       const lastBinaryIndex = stack.length - index
-      const firstPart = stack.slice(0, lastBinaryIndex)
-      const secondPart = stack.slice(lastBinaryIndex)
-      return (
-        expressionSequentialFrom(firstPart) +
-        seqFmt(
-          firstPart[lastBinaryIndex - 1].operator,
-          expressionSequentialFrom(secondPart),
-        )
+      const firstPart = stack.slice(0, lastBinaryIndex - 1)
+      const secondPart = stack.slice(lastBinaryIndex - 1)
+
+      const firstExpressionPart = expressionSequentialFrom(firstPart)
+      const secondExpressionPart = seqFmt(
+        firstPart[firstPart.length - 1].operator,
+        expressionSequentialFrom(secondPart),
       )
+      return firstExpressionPart + secondExpressionPart
     }
 
-    const prev = calc(expressionSequentialFrom(stack.slice(0, -1)))
+    const prev = expressionSequentialFrom(stack.slice(0, -1))
     return wb(seqFmt(second.operator, prev))
   }, '' + initial)
 }

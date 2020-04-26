@@ -1,4 +1,5 @@
 import React from 'react'
+import Mousetrap from 'mousetrap'
 import PropTypes from 'prop-types'
 
 import Row from 'react-bootstrap/Row'
@@ -65,4 +66,28 @@ Keyboard.propTypes = {
 
 Keyboard.defaultProps = {
   onClick: function () {}, // noop
+}
+
+Keyboard.registerKeyBindings = function (handler) {
+  for (let i = 0; i < buttonGrid.length; i++) {
+    for (let j = 0; j < buttonGrid[i].length; j++) {
+      const button = buttonGrid[i][j]
+      Mousetrap.bind(
+        button.shortcut,
+        function () {
+          handler(button.id)
+        },
+        'keyup',
+      )
+    }
+  }
+}
+
+Keyboard.unregisterKeyBindings = function () {
+  for (let i = 0; i < buttonGrid.length; i++) {
+    for (let j = 0; j < buttonGrid[i].length; j++) {
+      const key = buttonGrid[i][j]
+      Mousetrap.unbind(key.shortcut, 'keyup')
+    }
+  }
 }

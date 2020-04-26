@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js-light'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Keyboard from './Keyboard'
 import { unformat } from '../core/string-utils'
@@ -45,6 +45,16 @@ export default function KeyboardState() {
   const stack = useSelector(function (state) {
     return state.accumulator
   })
+
+  useEffect(
+    function () {
+      Keyboard.registerKeyBindings(onClick)
+      return function () {
+        Keyboard.unregisterKeyBindings()
+      }
+    },
+    [onClick],
+  )
 
   const currentResult = unformat(display.result)
 

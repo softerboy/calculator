@@ -13,7 +13,7 @@ import {
   stackPush,
   stackReplaceLast,
 } from '../store/actions/accumulator'
-import { historyPush } from '../store/actions/history'
+import { historyPush, postCalculation } from '../store/actions/history'
 import { expressionFrom, resultFrom } from '../core/accumulator'
 
 const {
@@ -165,8 +165,18 @@ export default function KeyboardState() {
       const newStack = dispatch(stackPush(button, currentResult))
       const newResult = resultFrom(newStack)
       const newExpression = expressionFrom(newStack)
+
       dispatch(setDisplayResult(newExpression, newResult))
+
       dispatch(historyPush(newExpression, newResult))
+
+      // post calculation to backend
+      const postData = {
+        calculation: newExpression,
+        result: newResult,
+      }
+      dispatch(postCalculation(postData))
+
       return dispatch(stackClear())
     }
 

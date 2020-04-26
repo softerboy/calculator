@@ -1,4 +1,32 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Windows 10 Based Calculator App
+A fully featured calculator made using [React](https://reactjs.org/) with :coffee: and :heart: by [softerboy](https://github.com/softerboy)
+
+## Features:
+* Responsive UI
+* Keyboard input on Laptops (see section Keyboard for available key bindings)
+* History
+* Loading user's history from server (see section API layer to integrate with API layer)
+* Saving user's calculations history to server
+## Features need to implenent
+Handling `MC`, `MR`, `M+`, `M-` and `MS` memory button functions
+
+## How to run?
+
+#### Prerequisites
+In order to install and run this project locally,  
+you would need to have the following installed on you local machine.
+* [NodeJS](https://nodejs.org/en) v10+ or later as execution environment
+* [Yarn](https://yarnpkg.com/) package manager for NodeJS  
+
+:warning: It is strongly recommended to use **yarn** instead **npm**.
+
+1. Clone this repository:
+### `git clone https://github.com/softerboy/calculator.git`
+
+2. Install project dependencies:
+### `yarn install`
+
+3. :point_down: And then see below for available scripts
 
 ## Available Scripts
 
@@ -37,32 +65,67 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+### API Layer
+:warning: To simplifying development process and easy to test, application utilizes package [axios-mock-adapter](https://github.com/ctimmerm/axios-mock-adapter). Which means, application will requests to already prepared mock server. Whenever your server ready to use with endpoints below, you need to comment out :point_right: **[this](https://github.com/softerboy/calculator/blob/master/src/index.js#L13)** line.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+In order to save and load user history, your server must implement two endpoints.  
+Below you see can see endpoint urls and their data shape in json format 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+loads user history from server
+```
+GET /calculations
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+Content-Type application/json
 
-### Analyzing the Bundle Size
+[
+  {
+    "result": "40",
+    "date": "12:23:35 01-01-2015Z",
+    "calculation": "8 + 32 ="
+  },
+  {
+    "result": "-61",
+    "date": "12:45:35 01-01-2015Z",
+    "calculation": "sqrt(4) - 63 ="
+  }
+]
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+---
 
-### Making a Progressive Web App
+posts recently calculations to server
+```
+POST /calculations
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+Content-Type: application/json
 
-### Advanced Configuration
+{
+  "calculation": "1 + 3 * 34 =",
+  "date": "2020-04-26T19:58:07.146Z",
+  "result": "‭136‬"
+}
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+## Keyboard bindings
+* Numbers: `[0-9]`
+* Percent: `%` or `P`
+* Cancel Entry (CE): `C ` and then `E` key combinations
+* Clear (C): `C` and then `C` key combinations (i.e. double `C`)
+* Backspace: one of `Backspace` or  `Del` keys
+* One over X: `O` key
+* Square X: `S` and then `S`  (i.e. doubel `S`)
+* Square Root: `S` and then `R` (stands for square root)
+* Divide: `/` or `D` key
+* Multiply: `*` or `M` key
+* Subtract: `-` key
+* Plus: `+` or `A` key
+* Equal: one of `Enter`, `Space` or `=` keys
+* Point: `.` key
+* Sign: `S` and then `G` key combinations
 
-### Deployment
+---
+Any issues or pull requests are welcome!
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Happy hacking :blush:

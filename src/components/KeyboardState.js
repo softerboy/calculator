@@ -3,7 +3,11 @@ import React, { useEffect, useState } from 'react'
 
 import Keyboard from './Keyboard'
 import { unformat } from '../core/string-utils'
-import { buttons, MAX_DIGIT_COUNT } from '../common/constants'
+import {
+  buttons,
+  buttonsWillDisabledOnError,
+  MAX_DIGIT_COUNT,
+} from '../common/constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDisplayResult } from '../store/actions/display'
 import { hasFloatingPoint, isNumberAction, isUnaryOperator } from '../core/util'
@@ -58,7 +62,15 @@ export default function KeyboardState() {
 
   const currentResult = unformat(display.result)
 
+  // using string arguments instead number totally OK here
+  // noinspection JSCheckFunctionSignatures
+  const calculationError = !isFinite(currentResult) || isNaN(currentResult)
+
   function onClick(button) {
+    if (calculationError && buttonsWillDisabledOnError.includes(button)) {
+      return
+    }
+
     // whenever user clicks buttons below
     // he would be began from fresh display input
     const newInputButtons = [
@@ -170,6 +182,11 @@ export default function KeyboardState() {
     }
 
     if (button === BTN_EQUAL) {
+      if (calculationError) {
+        dispatch(stackClear())
+        return dispatch(setDisplayResult('', '0'))
+      }
+
       // show calculated result and expression
       // and clear/reset accumulator stack
       const newStack = dispatch(stackPush(button, currentResult))
@@ -206,5 +223,5 @@ export default function KeyboardState() {
     return dispatch(setDisplayResult(newExpression, newResult))
   }
 
-  return <Keyboard onClick={onClick} />
+  return <Keyboard onClick={onClick} disableKeypad={calculationError} />
 }

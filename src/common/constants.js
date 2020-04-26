@@ -75,3 +75,16 @@ export const htmlSymbols = {
   SQUARE_ROOT: '&#8730',
   EQUAL: '&#61;',
 }
+
+export const buttonsWillDisabledOnError = [
+  buttons.BTN_ADD,
+  buttons.BTN_SIGN,
+  buttons.BTN_DIVIDE,
+  buttons.BTN_SQUARE,
+  buttons.BTN_PERCENT,
+  buttons.BTN_MULTIPLY,
+  buttons.BTN_SUBTRACT,
+  buttons.BTN_SQUARE_ROOT,
+  buttons.BTN_ONE_DIVIDE_BY,
+  buttons.BTN_FLOATING_POINT,
+]

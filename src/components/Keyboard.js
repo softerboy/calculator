@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 
-import { buttons } from '../common/constants'
+import { buttons, buttonsWillDisabledOnError } from '../common/constants'
 import buttonGrid from '../common/keys'
 
 function colorStyleFor(buttonId) {
@@ -23,13 +23,23 @@ function colorStyleFor(buttonId) {
 
 export default function Keyboard(props) {
   function renderCell(button) {
-    const className = 'rounded-0 h-100 push-button ' + colorStyleFor(button.id)
+    const className = [
+      'rounded-0',
+      'h-100',
+      'push-button',
+      colorStyleFor(button.id),
+    ]
+
+    const disabled =
+      props.disableKeypad && buttonsWillDisabledOnError.includes(button.id)
+    if (disabled) className.push('text-secondary')
 
     return (
       <Button
         block
-        constiant="dark"
-        className={className}
+        variant="dark"
+        disabled={disabled}
+        className={className.join(' ')}
         onClick={props.onClick.bind(this, button.id)}
       >
         <span dangerouslySetInnerHTML={{ __html: button.symbol }} />
@@ -61,10 +71,12 @@ export default function Keyboard(props) {
 }
 
 Keyboard.propTypes = {
+  disableKeypad: PropTypes.bool,
   onClick: PropTypes.func,
 }
 
 Keyboard.defaultProps = {
+  disableKeypad: false,
   onClick: function () {}, // noop
 }
 

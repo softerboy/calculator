@@ -67,6 +67,10 @@ body,
   border: none;
 }
 
+.push-button:disabled {
+  background-color: #151718;
+}
+
 .operation-button {
   background-color: #151718;
 }

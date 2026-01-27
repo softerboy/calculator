@@ -4,10 +4,10 @@ A fully featured calculator made using [React](https://reactjs.org/) with :coffe
 <table>
   <tr>
     <td width="26%">
-      <img src="src/assets/images/screenshots/calculator_mobile.png" width="100%">
+      <img src="public/screenshots/calculator_mobile.png" width="100%">
     </td>
     <td width="60%">
-      <img src="src/assets/images/screenshots/calculator_desktop.png">
+      <img src="public/screenshots/calculator_desktop.png">
     </td>
   </tr>
 </table>

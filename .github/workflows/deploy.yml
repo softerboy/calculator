@@ -1,0 +1,114 @@
+name: Deploy
+
+# Build the production image, push it to GHCR, then deploy it to the box.
+#
+# The box is a pure Docker host: no git checkout, no compose file, no .env. The
+# repo lives on the runner, and the deploy job drives `docker compose` against
+# the box's daemon over an SSH Docker context. The edge proxy (softerboy/infra)
+# routes calculator.fumarov.me to calculator:8080 over the shared `edge` network.
+#
+# Repo secrets: SSH_HOST (the box's raw IP), SSH_USER, SSH_KEY (private key).
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# A deploy that has started always finishes (cancelling mid `compose up` could
+# leave the box without a running container).
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/softerboy/calculator
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://calculator.fumarov.me
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      # Only compose.prod.yaml is used, and only here on the runner.
+      - uses: actions/checkout@v4
+
+      - name: Configure SSH + a remote Docker context to the box
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          cat > ~/.ssh/config <<CFG
+          Host box
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/id_deploy
+            IdentitiesOnly yes
+            StrictHostKeyChecking accept-new
+          CFG
+          docker context create box --docker "host=ssh://box"
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+
+      # The credential stays on the runner; over the SSH context the CLI forwards
+      # it with the pull, so the box never stores a GHCR login.
+      - name: Authenticate to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Deploy to the box
+        env:
+          IMAGE: ${{ env.IMAGE }}:${{ github.sha }}
+        run: |
+          set -euo pipefail
+          dc() { docker --context box compose -p calculator -f compose.prod.yaml "$@"; }
+          dc pull
+          # --wait blocks until the healthcheck passes (fails the job otherwise).
+          dc up -d --remove-orphans --wait --wait-timeout 120 \
+            || { dc logs --tail 50; exit 1; }
+          echo "✓ calculator is healthy on the box"
+
+      - name: Prune old images on the box
+        if: always()
+        run: docker --context box image prune -f >/dev/null || true
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -f ~/.ssh/id_deploy || true
+          docker logout ghcr.io >/dev/null 2>&1 || true
